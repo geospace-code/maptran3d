@@ -1,6 +1,4 @@
 language: generic
-sudo: required
-dist: xenial
 group: travis_latest
 
 git:
@@ -11,10 +9,14 @@ os:
 - linux
 - osx
 
+env: FC=gfortran-6
+
 addons:
   apt:
+    sources:
+    - ubuntu-toolchain-r-test
     packages:
-    - gfortran
+    - gfortran-6
 
 before_install:
 - if [[ $TRAVIS_OS_NAME == osx ]]; then
