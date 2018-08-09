@@ -1,0 +1,32 @@
+language: generic
+sudo: required
+dist: xenial
+group: travis_latest
+
+git:
+  depth: 3
+  quiet: true
+
+os:
+- linux
+- osx
+
+addons:
+  apt:
+    packages:
+    - gfortran
+
+before_install:
+- if [[ $TRAVIS_OS_NAME == osx ]]; then
+  brew update > /dev/null;
+  brew install gcc > /dev/null || brew link --overwrite gcc > /dev/null;
+  export FC=gfortran;
+  fi
+
+install:
+- cd bin
+- cmake ..
+- cmake --build .
+
+script: ctest -V
+
