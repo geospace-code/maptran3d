@@ -94,12 +94,9 @@ elemental subroutine ecef2geodetic(x, y, z, lat, lon, alt, spheroid, deg)
 
 ! convert ECEF (meters) to geodetic coordintes
 
-! Algorithm is based on
-! http://www.astro.uni.torun.pl/~kb/Papers/geod/Geod-BG.htm
-! This algorithm provides a converging solution to the latitude equation
-! in terms of the parametric or reduced latitude form (v)
-! This algorithm provides a uniform solution over all latitudes as it does
-! not involve division by cos(phi) or sin(phi)
+! based on:
+! You, Rey-Jer. (2000). Transformation of Cartesian to Geodetic Coordinates without Iterations.
+! Journal of Surveying Engineering. doi: 10.1061/(ASCE)0733-9453
 
   real(wp), intent(in) :: x,y,z
   type(Ellipsoid), intent(in), optional :: spheroid
@@ -107,8 +104,7 @@ elemental subroutine ecef2geodetic(x, y, z, lat, lon, alt, spheroid, deg)
   real(wp), intent(out) :: lat, lon
   real(wp), intent(out), optional :: alt
 
-  real(wp) :: ea, eb, rad, rho, c, vnew, v
-  integer :: i
+  real(wp) :: ea, eb, r, E, u, Q, huE, Beta, eps
   type(Ellipsoid) :: ell
   logical :: d
 
@@ -116,30 +112,32 @@ elemental subroutine ecef2geodetic(x, y, z, lat, lon, alt, spheroid, deg)
 
   ea = ell%SemimajorAxis
   eb = ell%SemiminorAxis
-  rad = hypot(x, y)
-! Constant required for Latitude equation
-  rho = atan2(eb * z, ea * rad)
-! Constant required for latitude equation
-  c = (ea**2 - eb**2) / hypot(ea * rad, eb * z)
-! Starter for the Newtons Iteration Method
-  vnew = atan2(ea * z, eb * rad)
-! Initializing the parametric latitude
-  v = 0._wp
-  newton: do i = 1,5
-    v = vnew
-   ! Newtons Method for computing iterations
-    vnew = v - ((2 * sin(v - rho) - c * sin(2 * v)) / &
-              (2 * (cos(v - rho) - c * cos(2 * v))))
 
-    if (isclose(v,vnew)) exit newton
-  enddo newton
+  r = sqrt(x**2 + y**2 + z**2)
 
-! Computing latitude from the root of the latitude equation
-  lat = atan2(ea * tan(vnew), eb)
-! by inspection
-  lon = atan2(y, x)
- 
-  if (present(alt)) alt = ((rad - ea * cos(vnew)) * cos(lat)) + ((z - eb * sin(vnew)) * sin(lat))
+  E = sqrt(ea**2 - eb**2)
+
+  ! eqn. 4a
+  u = sqrt(0.5 * (r**2 - E**2) + 0.5 * sqrt((r**2 - E**2)**2 + 4 * E**2 * z**2))
+
+  Q = hypot(x, y)
+
+  huE = hypot(u, E)
+
+  ! eqn. 4b
+  Beta = atan(huE / u * z / hypot(x, y))
+
+  ! eqn. 13
+  eps = ((eb * u - ea * huE + E**2) * sin(Beta)) / (ea * huE * 1 / cos(Beta) - E**2 * cos(Beta))
+
+  Beta = Beta + eps
+! final output
+  lat = atan(ea / eb * tan(Beta))
+
+  lon = atan(y, x)
+
+! eqn. 7
+  if (present(alt)) alt = sqrt((z - eb * sin(Beta))**2 + (Q - ea * cos(Beta))**2)
 
   d=.true.
   if (present(deg)) d = deg

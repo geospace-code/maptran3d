@@ -37,7 +37,7 @@ call geodetic2aer(lat,lon,alt, observer_lat, observer_lon, observer_alt)
 
 ### Functions
 
-Popular mapping toolbox functions ported to Python include the
+Popular mapping toolbox functions ported to Fortran include the
 following, where the source coordinate system (before the "2") is
 converted to the desired coordinate system:
 
@@ -58,7 +58,6 @@ Abbreviations:
 
 ### Caveats
 
-* Atmospheric effects neglected in all functions not invoking AstroPy.
-  Would need to update code to add these input parameters (just start a GitHub Issue to request).
+* Atmospheric effects neglected in all functions.
 * Planetary perturbations and nutation etc. not fully considered.
 
