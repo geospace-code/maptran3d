@@ -5,30 +5,33 @@ git:
   depth: 3
   quiet: true
 
-os:
-- linux
-- osx
-
-env: FC=gfortran-6
+env: FC=gfortran
 
 addons:
   apt:
     sources:
     - ubuntu-toolchain-r-test
     packages:
-    - gfortran-6
+    - gfortran-5
 
-before_install:
-- if [[ $TRAVIS_OS_NAME == osx ]]; then
-  brew update > /dev/null;
-  brew install gcc > /dev/null || brew link --overwrite gcc > /dev/null;
-  export FC=gfortran;
-  fi
+matrix:
+  include:
+  - os: linux
+    env: FC=gfortran-5
+  - os: osx
+    before_install:
+    - brew install gcc > /dev/null
+  - os: windows
+    language: sh
+    install: 
+    - cd bin
+    - cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
+    - cmake --build .
 
 install:
 - cd bin
 - cmake ..
 - cmake --build .
 
-script: ctest -V
+script: ctest --output-on-failure
 

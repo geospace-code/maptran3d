@@ -134,7 +134,7 @@ elemental subroutine ecef2geodetic(x, y, z, lat, lon, alt, spheroid, deg)
 ! final output
   lat = atan(ea / eb * tan(Beta))
 
-  lon = atan(y, x)
+  lon = atan(y/x)
 
 ! eqn. 7
   if (present(alt)) alt = sqrt((z - eb * sin(Beta))**2 + (Q - ea * cos(Beta))**2)
