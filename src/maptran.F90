@@ -1,8 +1,16 @@
 module maptran
   use, intrinsic:: ieee_arithmetic, only: ieee_quiet_nan, ieee_value
-  use assert, only: wp,isclose
+  use, intrinsic:: iso_fortran_env, only: real32, real64, real128
   implicit none
   private
+
+#if REALBITS==32
+integer,parameter :: wp=real32
+#elif REALBITS==64
+integer,parameter :: wp=real64
+#elif REALBITS==128
+integer,parameter :: wp=real128
+#endif
 
   type,public :: Ellipsoid
      real(wp) :: SemimajorAxis, Flattening, SemiminorAxis 
@@ -35,7 +43,8 @@ impure elemental subroutine lookAtSpheroid(lat0, lon0, h0, az, tilt, lat, lon, s
 !        lat, lon: latitude and longitude where the line-of-sight intersects with the Earth ellipsoid
 !        d: slant range in meters from the starting point to the intersect point
 !        Values will be NaN if the line of sight does not intersect.
-!    Algorithm based on https://medium.com/@stephenhartzell/satellite-line-of-sight-intersection-with-earth-d786b4a6a9b6 Stephen Hartzell
+!    Algorithm based on: 
+!      https://medium.com/@stephenhartzell/satellite-line-of-sight-intersection-with-earth-d786b4a6a9b6 Stephen Hartzell
 
 real(wp), intent(in) :: lat0, lon0, h0, az, tilt
 type(Ellipsoid), intent(in), optional :: spheroid
@@ -49,7 +58,11 @@ real(wp):: nan
 
 nan = ieee_value(0._wp, ieee_quiet_nan)
 
-ell = merge(spheroid, wgs84Ellipsoid, present(spheroid))
+if (present(spheroid)) then
+  ell = spheroid
+else
+  ell = wgs84Ellipsoid
+endif
 
 d=.true.
 if (present(deg)) d = deg
@@ -108,7 +121,11 @@ elemental subroutine ecef2geodetic(x, y, z, lat, lon, alt, spheroid, deg)
   type(Ellipsoid) :: ell
   logical :: d
 
-  ell = merge(spheroid, wgs84Ellipsoid, present(spheroid))
+  if (present(spheroid)) then
+    ell = spheroid
+  else
+    ell = wgs84Ellipsoid
+  endif
 
   ea = ell%SemimajorAxis
   eb = ell%SemiminorAxis
@@ -176,7 +193,11 @@ elemental subroutine geodetic2ecef(lat,lon,alt, x,y,z, spheroid, deg)
   d = .true.  ! not merge, Flang gives segfault
   if (present(deg)) d = deg
   
-  ell = merge(spheroid, wgs84Ellipsoid, present(spheroid)) 
+  if (present(spheroid)) then
+    ell = spheroid
+  else
+    ell = wgs84Ellipsoid
+  endif 
 
   if (d) then
     lat = radians(lat)

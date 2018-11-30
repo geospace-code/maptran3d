@@ -2,19 +2,21 @@ module assert
 ! Gfortran >= 6 needed for ieee_arithmetic: ieee_is_nan
 
   use, intrinsic:: iso_c_binding, only: sp=>c_float, dp=>c_double
-  use, intrinsic:: iso_fortran_env, only: stderr=>error_unit
+  use, intrinsic:: iso_fortran_env, only: stderr=>error_unit, real32, real64, real128
   use, intrinsic:: ieee_arithmetic, only: ieee_is_finite, ieee_is_nan
   implicit none
   
-  interface assert_allclose
-    procedure assert_isclose
-  end interface assert_allclose
+#if REALBITS==32
+integer,parameter :: wp=real32
+#elif REALBITS==64
+integer,parameter :: wp=real64
+#elif REALBITS==128
+integer,parameter :: wp=real128
+#endif
   
   private
-
-  integer,parameter :: wp = sp
-  
-  public :: wp,isclose, assert_isclose, assert_allclose, errorstop
+ 
+  public :: wp,isclose, assert_allclose, errorstop
 
 contains
 
@@ -64,7 +66,7 @@ elemental logical function isclose(actual, desired, rtol, atol, equal_nan)
 end function isclose
 
 
-impure elemental subroutine assert_isclose(actual, desired, rtol, atol, equal_nan, err_msg)
+impure elemental subroutine assert_allclose(actual, desired, rtol, atol, equal_nan, err_msg)
 ! NOTE: with Fortran 2018 this can be Pure
 ! 
 ! inputs
@@ -88,12 +90,12 @@ impure elemental subroutine assert_isclose(actual, desired, rtol, atol, equal_na
     call errorstop
   endif
 
-end subroutine assert_isclose
+end subroutine assert_allclose
 
 
 pure subroutine errorstop
 
-#ifdef F08
+#if F08
 error stop
 #else
 stop 1

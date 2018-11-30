@@ -1,10 +1,16 @@
 module vallado
 ! based on http://www.smad.com/vallado/
-
-use assert, only : wp
-
+  use, intrinsic:: iso_fortran_env, only: real32, real64, real128
 implicit none
 private
+
+#if REALBITS==32
+integer,parameter :: wp=real32
+#elif REALBITS==64
+integer,parameter :: wp=real64
+#elif REALBITS==128
+integer,parameter :: wp=real128
+#endif
 
   real(wp), parameter :: pi = 4._wp * atan(1.0_wp)
 

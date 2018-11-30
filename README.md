@@ -3,7 +3,8 @@
 
 # Maptran
 Modern Fortran 3D coordinate conversions for geospace ecef enu eci.
-Similar to Python [PyMap3D](https://github.com/scivision/pymap3d).
+Similar to Python 
+[PyMap3D](https://github.com/scivision/pymap3d).
 
 ## Install
 
@@ -22,11 +23,16 @@ Optionally, verify Fortran functionality:
 ctest -V
 ```
 
+This creates `libmaptran.so` or similar, a shared library with compile-time polymorphism enabled by configuring Fortran preprocessor with one of:
+
+* `-Drealbits=32`
+* `-Drealbits=64`
+* `-Drealbits=128`
+
 ## Usage
 
 The modern Fortran API is simple like PyMap3D and Matlab Mapping Toolbox.
 `elemental` procedures are used throughout to enable seamless support of scalar or array coordinate inputs. 
-Default precision is `real64`, set at the top of `maptran.f90`.
 
 ```fortran
 use maptran
@@ -40,14 +46,15 @@ call geodetic2aer(lat,lon,alt, observer_lat, observer_lon, observer_alt)
 Popular mapping toolbox functions ported to Fortran include the
 following, where the source coordinate system (before the "2") is
 converted to the desired coordinate system:
-
-    aer2ecef  aer2enu  aer2geodetic  aer2ned
-    ecef2aer  ecef2enu  ecef2enuv  ecef2geodetic  ecef2ned  ecef2nedv
-    enu2aer  enu2ecef   enu2geodetic
-    geodetic2aer  geodetic2ecef  geodetic2enu  geodetic2ned
-    ned2aer  ned2ecef   ned2geodetic
-    azel2radec radec2azel
-    lookAtSpheroid
+```
+aer2ecef  aer2enu  aer2geodetic  aer2ned
+ecef2aer  ecef2enu  ecef2enuv  ecef2geodetic  ecef2ned  ecef2nedv
+enu2aer  enu2ecef   enu2geodetic
+geodetic2aer  geodetic2ecef  geodetic2enu  geodetic2ned
+ned2aer  ned2ecef   ned2geodetic
+azel2radec radec2azel
+lookAtSpheroid
+```
 
 Abbreviations:
 

@@ -1,5 +1,7 @@
+# gfortran >= 5
 language: generic
 group: travis_latest
+dist: xenial
 
 git:
   depth: 3
@@ -9,15 +11,12 @@ env: FC=gfortran
 
 addons:
   apt:
-    sources:
-    - ubuntu-toolchain-r-test
     packages:
-    - gfortran-5
+    - gfortran
 
 matrix:
   include:
   - os: linux
-    env: FC=gfortran-5
   - os: osx
     before_install:
     - brew install gcc > /dev/null

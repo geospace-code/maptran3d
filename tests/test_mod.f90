@@ -54,14 +54,14 @@ tilt = [30, 45, 90];
 call lookAtSpheroid(lat, lon, alt, az5, 0._wp, lat5, lon5, rng5)
 call assert_allclose(lat5, lat) 
 call assert_allclose(lon5, lon) 
-call assert_allclose(rng5, alt, rtol=0.005)
+call assert_allclose(rng5, alt, rtol=0.01_wp, err_msg='lookAtSpheroid')
 
 call lookAtSpheroid(lat, lon, alt, az5, tilt, lat5, lon5, rng5)
 
 
 call assert_allclose(lat5, [42.00103959_wp, 42.00177328_wp, nan],  equal_nan=.true.)
 call assert_allclose(lon5, [lon, -81.9995808_wp, nan],  equal_nan=.true.)
-call assert_allclose(rng5, [230.9413173_wp, 282.84715651_wp, nan], rtol=0.01, equal_nan=.true.)
+call assert_allclose(rng5, [230.9413173_wp, 282.84715651_wp, nan], rtol=0.01_wp, equal_nan=.true.)
 
 
 !-------
