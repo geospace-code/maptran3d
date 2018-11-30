@@ -14,7 +14,7 @@ integer,parameter :: wp=real128
 
   real(wp), parameter :: pi = 4._wp * atan(1.0_wp)
 
-  type,public :: time
+  type,public :: datetime
      integer :: year, month, day, hour, minute
      real(wp) :: second
   end type
@@ -133,7 +133,7 @@ elemental real(wp) function toJulian(t) result(jd)
 ! -----
 ! JD: Julian Date
 
-  type(time), intent(in) :: t
+  type(datetime), intent(in) :: t
   real(wp) :: B, y, m
   
   y = t%year

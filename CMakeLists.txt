@@ -11,8 +11,12 @@ if(NOT realbits)
   set(realbits 64)
 endif()
 
-# --- other libraries
-add_library(maptran SHARED src/maptran.F90 src/vallado.F90)
+if(NOT WIN32)
+  option(BUILD_SHARED_LIBS "Shared libraries .so. Feel free to turn off." ON)
+endif()
+
+# --- Maptran library
+add_library(maptran src/maptran.F90 src/vallado.F90)
 target_compile_options(maptran PRIVATE ${FFLAGS})
 target_compile_definitions(maptran PUBLIC REALBITS=${realbits})
 # --- testing

@@ -23,7 +23,7 @@ real(wp), dimension(N), parameter :: alat = [42,52,62], &
                                      deg0 = [15,30,45], &
                                      aaz = [33,43,53]
                                      
-type(time), parameter :: t0 = time(2014,4,6,8,0,0) ! UTC 
+type(datetime), parameter :: t0 = datetime(2014,4,6,8,0,0) ! UTC 
 real(wp), parameter ::  jd0 = 2456753.833333_wp
 
 
@@ -190,5 +190,5 @@ call assert_allclose(anglesep(35._wp,23._wp, 84._wp,20._wp), ha,&
                    err_msg='angle_sep')
 
 
-print *,'OK: Maptran'
+print *,'OK: Maptran ',storage_size(0._wp),' bits'
 end program
