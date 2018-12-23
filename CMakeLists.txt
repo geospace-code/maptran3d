@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.7)
 project(MapTran Fortran)
 enable_testing()
 
-set(CTEST_OUTPUT_ON_FAILURE ON)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake/Modules/)
 
 include(cmake/compilers.cmake)
