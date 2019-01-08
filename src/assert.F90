@@ -40,7 +40,10 @@ elemental logical function isclose(actual, desired, rtol, atol, equal_nan)
 
   real(wp) :: r,a
   logical :: n
-  ! this is appropriate INSTEAD OF merge(), since non present values aren't defined.
+  
+  isclose = .false. !< ensure it's defined
+  
+  !> INSTEAD OF merge(), since non present values aren't defined.
   r = 1e-5_wp
   a = 0._wp
   n = .false.
@@ -56,8 +59,10 @@ elemental logical function isclose(actual, desired, rtol, atol, equal_nan)
   !isclose = (actual == desired)
   !if (isclose) return
 !--- equal nan
-  isclose = n.and.(ieee_is_nan(actual).and.ieee_is_nan(desired))
-  if (isclose) return
+  if (n) then ! fortran is NOT short circuit logic in general
+    isclose = (ieee_is_nan(actual) .and. ieee_is_nan(desired)) 
+    if (isclose) return
+  endif
 !--- Inf /= -Inf, unequal NaN
   if (.not.ieee_is_finite(actual) .or. .not.ieee_is_finite(desired)) return
 !--- floating point closeness check

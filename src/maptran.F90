@@ -58,11 +58,8 @@ real(wp):: nan
 
 nan = ieee_value(0._wp, ieee_quiet_nan)
 
-if (present(spheroid)) then
-  ell = spheroid
-else
-  ell = wgs84Ellipsoid
-endif
+ell = wgs84Ellipsoid
+if (present(spheroid)) ell = spheroid
 
 d=.true.
 if (present(deg)) d = deg
@@ -119,13 +116,10 @@ elemental subroutine ecef2geodetic(x, y, z, lat, lon, alt, spheroid, deg)
 
   real(wp) :: ea, eb, r, E, u, Q, huE, Beta, eps
   type(Ellipsoid) :: ell
-  logical :: d
+  logical :: d, inside
 
-  if (present(spheroid)) then
-    ell = spheroid
-  else
-    ell = wgs84Ellipsoid
-  endif
+  ell = wgs84Ellipsoid
+  if (present(spheroid)) ell = spheroid
 
   ea = ell%SemimajorAxis
   eb = ell%SemiminorAxis
@@ -142,7 +136,7 @@ elemental subroutine ecef2geodetic(x, y, z, lat, lon, alt, spheroid, deg)
   huE = hypot(u, E)
 
   ! eqn. 4b
-  Beta = atan(huE / u * z / hypot(x, y))
+  Beta = atan(huE / u * z, hypot(x, y))
 
   ! eqn. 13
   eps = ((eb * u - ea * huE + E**2) * sin(Beta)) / (ea * huE * 1 / cos(Beta) - E**2 * cos(Beta))
@@ -151,11 +145,18 @@ elemental subroutine ecef2geodetic(x, y, z, lat, lon, alt, spheroid, deg)
 ! final output
   lat = atan(ea / eb * tan(Beta))
 
-  lon = atan(y/x)
+  lon = atan(y, x)
 
 ! eqn. 7
-  if (present(alt)) alt = sqrt((z - eb * sin(Beta))**2 + (Q - ea * cos(Beta))**2)
-
+  if (present(alt)) then
+    alt = hypot(z - eb * sin(Beta), Q - ea * cos(Beta))
+    
+    !> inside ellipsoid?
+    inside = x**2 / ea**2 + y**2 / ea**2 + z**2 / eb**2 < 1._wp
+    if (inside) alt = -alt
+  endif
+  
+  
   d=.true.
   if (present(deg)) d = deg
 
@@ -193,11 +194,8 @@ elemental subroutine geodetic2ecef(lat,lon,alt, x,y,z, spheroid, deg)
   d = .true.  ! not merge, Flang gives segfault
   if (present(deg)) d = deg
   
-  if (present(spheroid)) then
-    ell = spheroid
-  else
-    ell = wgs84Ellipsoid
-  endif 
+  ell = wgs84Ellipsoid
+  if (present(spheroid)) ell = spheroid
 
   if (d) then
     lat = radians(lat)
@@ -468,8 +466,8 @@ elemental subroutine enu2aer(east, north, up, az, elev, slantRange, deg)
   r = hypot(east, north)
   slantRange = hypot(r, up)
   ! radians
-  elev = atan2(up, r)
-  az = modulo(atan2(east, north), 2._wp * atan2(0._wp, -1._wp))
+  elev = atan(up, r)
+  az = modulo(atan(east, north), 2._wp * atan(0._wp, -1._wp))
 
   d=.true.
   if (present(deg)) d = deg

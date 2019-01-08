@@ -8,7 +8,7 @@ Similar to Python
 
 ## Install
 
-Requires Fortran 2003+ compiler, such as `gfortran`, `ifort`, PGI, `nagfor`, `flang`, etc.
+Requires Fortran 2008 compiler, such as `gfortran`, `ifort`, PGI, `nagfor`, `flang`, Cray, IBM XL, etc.
 
 ```sh
 cd bin

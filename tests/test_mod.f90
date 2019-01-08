@@ -7,7 +7,7 @@ use assert, only: wp, assert_allclose
 
 implicit none
 
-!type(Ellipsoid), parameter :: spheroid = wgs84Ellipsoid
+type(Ellipsoid), parameter :: spheroid = wgs84Ellipsoid
 
 real(wp), parameter :: lat = 42, lon= -82, alt = 200, &
                        az = 33, el=70, rng= 1e3_wp, &
@@ -45,8 +45,6 @@ real(wp):: nan
 
 nan = ieee_value(0._wp, ieee_quiet_nan)
 
-!print*,'Default WGS84 Ellipsoid:',spheroid
-
 ! --------- scalar degrees      
 az5 = [0._wp, 10._wp, 125._wp];
 tilt = [30, 45, 90];
@@ -64,7 +62,7 @@ call assert_allclose(lon5, [lon, -81.9995808_wp, nan],  equal_nan=.true.)
 call assert_allclose(rng5, [230.9413173_wp, 282.84715651_wp, nan], rtol=0.01_wp, equal_nan=.true.)
 
 
-!-------
+!! Scalar degrees
 
 call geodetic2ecef(lat,lon,alt, x1,y1,z1)
 call assert_allclose([x1,y1,z1],[x0,y0,z0], &
@@ -76,8 +74,21 @@ call assert_allclose([e1,n1,u1], [er,nr,ur])
 call aer2ecef(az,el,rng,lat,lon,alt,x2,y2,z2)
 call assert_allclose([x2,y2,z2],[xl,yl,zl])
 
+!> ECEF2GEODETIC tests
 call ecef2geodetic(x1,y1,z1,lat2,lon2,alt2)
 call assert_allclose([lat2,lon2,alt2],[lat,lon,alt], &
+                    rtol=0.01_wp, err_msg='ecef2geodetic-degrees')
+
+call ecef2geodetic(spheroid%SemimajorAxis-1._wp, 0._wp, 0._wp, lat2, lon2, alt2)
+call assert_allclose([lat2,lon2,alt2],[0._wp, 0._wp, -1._wp], &
+                    rtol=0.01_wp, err_msg='ecef2geodetic-degrees')
+
+call ecef2geodetic(0._wp, spheroid%SemimajorAxis-1._wp, 0._wp, lat2, lon2, alt2)
+call assert_allclose([lat2,lon2,alt2],[0._wp, 90._wp, -1._wp], &
+                    rtol=0.01_wp, err_msg='ecef2geodetic-degrees')
+
+call ecef2geodetic(0._wp, 0._wp, spheroid%SemiminorAxis-1._wp, lat2, lon2, alt2)
+call assert_allclose([lat2,lon2,alt2],[90._wp, 0._wp, -1._wp], &
                     rtol=0.01_wp, err_msg='ecef2geodetic-degrees')
 
 call enu2aer(e1,n1,u1, az2, el2, rng2)

@@ -10,10 +10,6 @@ if(NOT realbits)
   set(realbits 64)
 endif()
 
-if(NOT WIN32)
-  option(BUILD_SHARED_LIBS "Shared libraries .so. Feel free to turn off." ON)
-endif()
-
 # --- Maptran library
 add_library(maptran src/maptran.F90 src/vallado.F90)
 target_compile_options(maptran PRIVATE ${FFLAGS})
