@@ -29,7 +29,7 @@ real(wp), parameter ::  jd0 = 2456753.833333_wp
 
 
 real(wp) :: lat2, lon2, alt2,lat3,lon3,alt3,lat4,lon4,alt4,  &
-            x1,y1,z1,x2,y2,z2,x3,y3,z3,&
+            x1,y1,z1,x2,y2,z2,x3,y3,z3, x7,y7,z7,&
             az2,el2,rng2,az3,el3,rng3,az4,el4,rng4,azrd,elrd,rae,dae,jd, &
             e1,n1,u1,e2,n2,u2,e3,n3,u3, &
             lat5(3), lon5(3), rng5(3), az5(3), tilt(3)
@@ -67,36 +67,71 @@ call assert_allclose(rng5, [230.9413173_wp, 282.84715651_wp, nan], rtol=0.01_wp,
 call geodetic2ecef(lat,lon,alt, x1,y1,z1)
 call assert_allclose([x1,y1,z1],[x0,y0,z0], &
                    err_msg='geodetic2ecef-degrees')
+                   
+call geodetic2ecef(0._wp, 0._wp, -1._wp, x7, y7, z7)
+call assert_allclose([x7,y7,z7], [spheroid%SemimajorAxis-1, 0._wp, 0._wp])
+
+call geodetic2ecef(0._wp, 90._wp, -1._wp, x7, y7, z7)
+call assert_allclose([x7,y7,z7], [0._wp, spheroid%SemimajorAxis-1, 0._wp])
+
+call geodetic2ecef(90._wp, 0._wp, -1._wp, x7, y7, z7)
+call assert_allclose([x7,y7,z7], [0._wp, 0._wp, spheroid%SemiminorAxis-1])
+
 
 call aer2enu(az,el,rng, e1,n1,u1)
 call assert_allclose([e1,n1,u1], [er,nr,ur])
 
+
 call aer2ecef(az,el,rng,lat,lon,alt,x2,y2,z2)
 call assert_allclose([x2,y2,z2],[xl,yl,zl])
+
+call aer2ecef(0._wp, -90._wp, 1._wp, 0._wp, 0._wp, -1._wp, x7, y7, z7)
+call assert_allclose([x7,y7,z7],[spheroid%SemimajorAxis-1._wp, 0._wp, 0._wp], atol=1e-6_wp)
+
+call aer2ecef(0._wp, -90._wp, 1._wp, 0._wp, 90._wp, -1._wp, x7, y7, z7)
+call assert_allclose([x7,y7,z7],[0._wp, spheroid%SemimajorAxis-1._wp, 0._wp], atol=1e-6_wp)
+
+call aer2ecef(0._wp, -90._wp, 1._wp, 90._wp, 0._wp, -1._wp, x7, y7, z7)
+call assert_allclose([x7,y7,z7],[0._wp, 0._wp,spheroid%SemiminorAxis-1._wp], atol=1e-6_wp)
 
 !> ECEF2GEODETIC tests
 call ecef2geodetic(x1,y1,z1,lat2,lon2,alt2)
 call assert_allclose([lat2,lon2,alt2],[lat,lon,alt], &
                     rtol=0.01_wp, err_msg='ecef2geodetic-degrees')
 
-call ecef2geodetic(spheroid%SemimajorAxis-1._wp, 0._wp, 0._wp, lat2, lon2, alt2)
+call ecef2geodetic(spheroid%SemimajorAxis-1, 0._wp, 0._wp, lat2, lon2, alt2)
 call assert_allclose([lat2,lon2,alt2],[0._wp, 0._wp, -1._wp], &
-                    rtol=0.01_wp, err_msg='ecef2geodetic-degrees')
+                     err_msg='ecef2geodetic-degrees')
 
-call ecef2geodetic(0._wp, spheroid%SemimajorAxis-1._wp, 0._wp, lat2, lon2, alt2)
+call ecef2geodetic(0._wp, spheroid%SemimajorAxis-1, 0._wp, lat2, lon2, alt2)
 call assert_allclose([lat2,lon2,alt2],[0._wp, 90._wp, -1._wp], &
-                    rtol=0.01_wp, err_msg='ecef2geodetic-degrees')
+                     err_msg='ecef2geodetic-degrees')
 
-call ecef2geodetic(0._wp, 0._wp, spheroid%SemiminorAxis-1._wp, lat2, lon2, alt2)
+call ecef2geodetic(0._wp, 0._wp, spheroid%SemiminorAxis-1, lat2, lon2, alt2)
 call assert_allclose([lat2,lon2,alt2],[90._wp, 0._wp, -1._wp], &
-                    rtol=0.01_wp, err_msg='ecef2geodetic-degrees')
+                    err_msg='ecef2geodetic-degrees')
 
 call enu2aer(e1,n1,u1, az2, el2, rng2)
 call assert_allclose([az2,el2,rng2],[az,el,rng],err_msg='enu2aer-degrees')
 
+!> ECEF2AER
 call ecef2aer(x2,y2,z2, lat,lon,alt, az3, el3, rng3)
 call assert_allclose([az3,el3,rng3],[az,el,rng], & 
                     rtol=1e-3_wp, err_msg='ecef2aer-degrees')
+
+call ecef2aer(spheroid%SemimajorAxis-1._wp, 0._wp, 0._wp, 0._wp, 0._wp, 0._wp, az3, el3, rng3)
+call assert_allclose([az3,el3,rng3], [0._wp, -90._wp, 1._wp], &
+                     err_msg='ecef2aer-degrees')
+
+call ecef2aer(0._wp, spheroid%SemimajorAxis-1._wp, 0._wp, 0._wp, 90._wp, 0._wp, az3, el3, rng3)
+call assert_allclose([az3,el3,rng3], [0._wp, -90._wp, 1._wp], &
+                     err_msg='ecef2aer-degrees')
+
+call ecef2aer(0._wp, 0._wp, spheroid%SemimajorAxis-1._wp, 90._wp, 0._wp, 0._wp, az3, el3, rng3)
+call assert_allclose([az3,el3,rng3], [0._wp, -90._wp, 1._wp], &
+                     rtol=1e6_wp, err_msg='ecef2aer-degrees')
+
+
 
 call aer2geodetic(az,el,rng,lat,lon,alt, lat3,lon3,alt3)
 call assert_allclose([lat3,lon3,alt3],[lat1,lon1,alt1], &
@@ -123,7 +158,7 @@ call assert_allclose([e3,n3,u3],[e1,n1,u1], &
 
 call assert_allclose(degrees(radians(deg0)), deg0, err_msg='deg<->rad')
 
-! ------ scalar radians
+!> scalar radians
 
 call geodetic2ecef(radians(lat),radians(lon),alt, x1,y1,z1, deg=.false.)
 call assert_allclose([x1,y1,z1],[x0,y0,z0])
@@ -142,6 +177,7 @@ call enu2aer(e1,n1,u1, az2, el2, rng2, deg=.false.)
 call assert_allclose([degrees(az2),degrees(el2),rng2],[az,el,rng], & 
                     err_msg='enu2aer: rad')
 
+!> ECEF2AER
 call ecef2aer(x2,y2,z2, radians(lat),radians(lon),alt, az3,el3,rng3, deg=.false.)
 call assert_allclose([degrees(az3),degrees(el3),rng3],[az,el,rng], &
                     rtol=1e-3_wp, err_msg='ecef2aer-radians')

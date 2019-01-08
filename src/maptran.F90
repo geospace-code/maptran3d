@@ -114,7 +114,7 @@ elemental subroutine ecef2geodetic(x, y, z, lat, lon, alt, spheroid, deg)
   real(wp), intent(out) :: lat, lon
   real(wp), intent(out), optional :: alt
 
-  real(wp) :: ea, eb, r, E, u, Q, huE, Beta, eps
+  real(wp) :: ea, eb, r, E, u, Q, huE, Beta, eps, sinBeta, cosBeta
   type(Ellipsoid) :: ell
   logical :: d, inside
 
@@ -135,21 +135,29 @@ elemental subroutine ecef2geodetic(x, y, z, lat, lon, alt, spheroid, deg)
 
   huE = hypot(u, E)
 
-  ! eqn. 4b
+  !> eqn. 4b
   Beta = atan(huE / u * z, hypot(x, y))
 
-  ! eqn. 13
-  eps = ((eb * u - ea * huE + E**2) * sin(Beta)) / (ea * huE * 1 / cos(Beta) - E**2 * cos(Beta))
-
-  Beta = Beta + eps
-! final output
-  lat = atan(ea / eb * tan(Beta))
+!> final output
+  if (abs(beta-pi/2) <= epsilon(pi/2)) then !< singularity
+    lat = pi/2
+    cosBeta = 0._wp
+    sinBeta = 1._wp
+  else
+    !> eqn. 13
+    eps = ((eb * u - ea * huE + E**2) * sin(Beta)) / (ea * huE * 1 / cos(Beta) - E**2 * cos(Beta))
+    Beta = Beta + eps
+  
+    lat = atan(ea / eb * tan(Beta))
+    cosBeta = cos(Beta)
+    sinBeta = sin(Beta)
+  endif
 
   lon = atan(y, x)
 
 ! eqn. 7
   if (present(alt)) then
-    alt = hypot(z - eb * sin(Beta), Q - ea * cos(Beta))
+    alt = hypot(z - eb * sinBeta, Q - ea * cosBeta)
     
     !> inside ellipsoid?
     inside = x**2 / ea**2 + y**2 / ea**2 + z**2 / eb**2 < 1._wp
@@ -187,7 +195,7 @@ elemental subroutine geodetic2ecef(lat,lon,alt, x,y,z, spheroid, deg)
   type(Ellipsoid), intent(in), optional :: spheroid
   logical, intent(in), optional :: deg
 
-  real(wp) :: N
+  real(wp) :: N, sinLat, cosLat, cosLon, sinLon
   type(Ellipsoid) :: ell
   logical :: d
 
@@ -202,13 +210,37 @@ elemental subroutine geodetic2ecef(lat,lon,alt, x,y,z, spheroid, deg)
     lon = radians(lon)
   endif
 
-! Radius of curvature of the prime vertical section
+!> Radius of curvature of the prime vertical section
   N = radius_normal(lat, ell)
-! Compute cartesian (geocentric) coordinates given  (curvilinear) geodetic coordinates.
 
-  x = (N + alt) * cos(lat) * cos(lon)
-  y = (N + alt) * cos(lat) * sin(lon)
-  z = (N * (ell%SemiminorAxis / ell%SemimajorAxis)**2 + alt) * sin(lat)
+!> Compute cartesian (geocentric) coordinates given  (curvilinear) geodetic coordinates.
+
+  if (abs(lat) <= epsilon(lat)) then
+    cosLat = 1._wp
+    sinLat = 0._wp
+  elseif (abs(lat-pi/2) <= epsilon(lat)) then
+    cosLat = 0._wp
+    sinLat = 1._wp
+  else
+    cosLat = cos(lat)
+    sinLat = sin(lat)
+  endif
+  
+  if (abs(lon) <= epsilon(lon)) then
+    cosLon = 1._wp
+    sinLon = 0._wp
+  elseif (abs(lon-pi/2) <= epsilon(lon)) then
+    cosLon = 0._wp
+    sinLon = 1._wp
+  else
+    cosLon = cos(lon)
+    sinLon = sin(lon)
+  endif
+  
+
+  x = (N + alt) * cosLat * cosLon
+  y = (N + alt) * cosLat * sinLon
+  z = (N * (ell%SemiminorAxis / ell%SemimajorAxis)**2 + alt) * sinLat
 
 end subroutine geodetic2ecef
 
@@ -460,14 +492,19 @@ elemental subroutine enu2aer(east, north, up, az, elev, slantRange, deg)
   logical, intent(in), optional :: deg
   real(wp), intent(out) :: az, elev, slantRange
   
-  real(wp) :: r
+  real(wp) :: r, e
   logical :: d
+
+!> singularity, 1mm precision
+  e = east
+  if (abs(e) < 1e-3_wp) e = 0._wp
   
-  r = hypot(east, north)
+  r = hypot(e, north)
   slantRange = hypot(r, up)
-  ! radians
+
+  !> radians
   elev = atan(up, r)
-  az = modulo(atan(east, north), 2._wp * atan(0._wp, -1._wp))
+  az = modulo(atan(e, north), 2._wp * pi)
 
   d=.true.
   if (present(deg)) d = deg
@@ -612,10 +649,18 @@ end subroutine enu2uvw
 
 
 elemental real(wp) function radius_normal(lat,E)
-    real(wp), intent(in) :: lat
-    type(Ellipsoid), intent(in) :: E
 
-    radius_normal = E%SemimajorAxis**2 / sqrt( E%SemimajorAxis**2 * cos(lat)**2 + E%SemiminorAxis**2 * sin(lat)**2 )
+real(wp), intent(in) :: lat
+type(Ellipsoid), intent(in) :: E
+
+!> singularity
+if (abs(lat) <= epsilon(lat)) then
+  radius_normal = E%SemimajorAxis
+!elseif (abs(lat-pi/2) <= epsilon(lat)) then
+!  radius_normal = E%SemiminorAxis
+else
+  radius_normal = E%SemimajorAxis**2 / sqrt( E%SemimajorAxis**2 * cos(lat)**2 + E%SemiminorAxis**2 * sin(lat)**2 )
+endif
 
 end function radius_normal
 
