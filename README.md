@@ -2,14 +2,23 @@
 [![Build Status](https://travis-ci.com/scivision/maptran.svg?branch=master)](https://travis-ci.com/scivision/maptran)
 [![Build status](https://ci.appveyor.com/api/projects/status/rtmoplrumvonsscs?svg=true)](https://ci.appveyor.com/project/scivision/maptran)
 
-# Maptran
+# Maptran 3D
 Modern Fortran 3D coordinate conversions for geospace ecef enu eci.
 Similar to Python 
-[PyMap3D](https://github.com/scivision/pymap3d).
+[PyMap3D](https://github.com/scivision/pymap3d)
+and Matlab / GNU Octave
+[Matmap3d](https://github.com/scivision/matmap3d).
 
 ## Install
 
 Requires Fortran 2008 compiler, such as `gfortran`, `ifort`, PGI, `nagfor`, `flang`, Cray, IBM XL, etc.
+Use CMake or Meson to build the suite, which creates `libmaptran.so` or similar, a shared library with compile-time polymorphism enabled by configuring Fortran preprocessor with one of:
+
+* `-Drealbits=32`
+* `-Drealbits=64`
+* `-Drealbits=128`
+
+### CMake
 
 ```sh
 cd bin
@@ -24,11 +33,21 @@ Optionally, verify Fortran functionality:
 ctest -V
 ```
 
-This creates `libmaptran.so` or similar, a shared library with compile-time polymorphism enabled by configuring Fortran preprocessor with one of:
+### Meson
 
-* `-Drealbits=32`
-* `-Drealbits=64`
-* `-Drealbits=128`
+```sh
+cd bin
+
+meson ..
+
+ninja
+```
+
+Optionally, verify Fortran functionality:
+```sh
+ninja test
+``` 
+
 
 ## Usage
 
