@@ -30,17 +30,19 @@ endif()
 
 include(CheckFortranSourceCompiles)
 
-check_fortran_source_compiles("
-program a
-use, intrinsic:: ieee_arithmetic
-end" 
+check_fortran_source_compiles("block; end block; end" 
+  f08block SRC_EXT f90)
+if(NOT f08block)
+  message(WARNING "f2008 BLOCK not supported by " ${CMAKE_Fortran_COMPILER_ID})
+endif()
+
+check_fortran_source_compiles("use, intrinsic:: ieee_arithmetic; end" 
   f08ieee SRC_EXT f90)
-  
 if(NOT f08ieee)
-  message(FATAL_ERROR "IEEE_arithmetic not supported by your compiler")
+  message(FATAL_ERROR "IEEE_arithmetic not supported by " ${CMAKE_Fortran_COMPILER_ID})
 endif()
                        
-check_fortran_source_compiles("program a; error stop; end" 
+check_fortran_source_compiles("error stop; end" 
   f08errorstop SRC_EXT f90)
 if(NOT f08errorstop)
   set(f08errorstop 0)
