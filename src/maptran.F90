@@ -683,11 +683,9 @@ elemental real(wp) function radius_normal(lat,E)
 real(wp), intent(in) :: lat
 type(Ellipsoid), intent(in) :: E
 
-!> singularity
+!> singularity  pi/2 issue is inherent to real32
 if (abs(lat) <= epsilon(lat)) then
   radius_normal = E%SemimajorAxis
-!elseif (abs(lat-pi/2) <= epsilon(lat)) then
-!  radius_normal = E%SemiminorAxis
 else
   radius_normal = E%SemimajorAxis**2 / sqrt( E%SemimajorAxis**2 * cos(lat)**2 + E%SemiminorAxis**2 * sin(lat)**2 )
 endif

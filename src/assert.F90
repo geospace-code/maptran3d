@@ -46,8 +46,8 @@ logical :: n
 isclose = .false. !< ensure it's defined
 
 !> INSTEAD OF merge(), since non present values aren't defined.
-r = 1e-5_wp
-a = 0._wp
+r = 1e-6_wp
+a = 1e-12_wp
 n = .false.
 if (present(rtol)) r = rtol
 if (present(atol)) a = atol

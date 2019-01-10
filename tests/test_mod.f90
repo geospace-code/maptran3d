@@ -13,7 +13,7 @@ real(wp), parameter :: &
 lat = 42, lon= -82, alt = 200, &
 az = 33, el=70, rng= 1e3_wp, &
 x0 = 660.6752518e3_wp, y0 = -4700.9486832e3_wp, z0 = 4245.7376622e3_wp, &
-xl = 660.930e3_wp, yl = -4701.424e3_wp, zl = 4246.579e3_wp, & !< aer2ecef
+xl = 6.609301927610815e+5, yl = -4.701424222957011e6, zl = 4.246579604632881e+06, & !< aer2ecef
 er = 186.277521_wp, nr = 286.84222_wp, ur = 939.69262_wp, & !< aer2enu
 lat1 = 42.0026_wp, lon1 = -81.9978_wp, alt1 = 1.1397e3_wp, & !< aer2geodetic
 azi = 180.1_wp,  eli = 80._wp, &
@@ -45,10 +45,10 @@ select case (storage_size(nan))
     atol_deg = 0.1_wp
   case (64)
     atol_dist = 0.001_wp !< 1 mm
-    atol_deg = 1e-3_wp
+    atol_deg = 0.01_wp
   case (128)
-    atol_dist = 1e-6_wp
-    atol_deg = 1e-8_wp
+    atol_dist = 0.001_wp !< 1 mm
+    atol_deg = 1e-6_wp
 end select
 
 nan = ieee_value(0._wp, ieee_quiet_nan)
@@ -218,7 +218,7 @@ test_ecef2aer: block
   real(wp) :: a, e, r, x, y,z
 
   call ecef2aer(xl,yl,zl, lat,lon,alt, a, e, r)
-  call assert_allclose([a,e], [az,el], atol=atol_deg, rtol=0.001_wp)
+  call assert_allclose([a,e], [az,el], atol=atol_deg)
   call assert_allclose(r, rng, atol=atol_dist, rtol=0.001_wp)
 
   call ecef2aer(ea-1._wp, 0._wp, 0._wp, 0._wp, 0._wp, 0._wp, a, e, r)
@@ -237,19 +237,18 @@ test_ecef2aer: block
   call assert_allclose([a,e,r], [0._wp, -90._wp, 1._wp], &
                        err_msg='ecef2aer-degrees')
 
-  call ecef2aer(0._wp, 0._wp, ea-1._wp, 90._wp, 0._wp, 0._wp, a, e, r)
-  call assert_allclose([a,e,r], [0._wp, -90._wp, 1._wp], &
-                       rtol=1e6_wp, err_msg='ecef2aer-degrees')
-  call ecef2aer(0._wp, 0._wp, -ea+1._wp, -90._wp, 0._wp, 0._wp, a, e, r)
-  call assert_allclose([a,e,r], [0._wp, -90._wp, 1._wp], &
-                       rtol=1e6_wp, err_msg='ecef2aer-degrees')
+  call ecef2aer(0._wp, 0._wp, eb-1000._wp, 90._wp, 0._wp, 0._wp, a, e, r)
+  call assert_allclose([a,e,r], [0._wp, -90._wp, 1000._wp], rtol=0.001_wp)
+  
+  call ecef2aer(0._wp, 0._wp, -eb+1000._wp, -90._wp, 0._wp, 0._wp, a, e, r)
+  call assert_allclose([a,e,r], [0._wp, -90._wp, 1000._wp], rtol=0.001_wp)
 
   call ecef2aer((ea-1000._wp)/sqrt(2._wp), (ea-1000._wp)/sqrt(2._wp), 0._wp, &
                 0._wp, 45._wp, 0._wp, a, e, r)
   call assert_allclose([a,e,r], [0._wp, -90._wp, 1000._wp], &
                        rtol=0.001_wp, err_msg='ecef2aer-degrees')
                        
- call aer2ecef(radians(az),radians(el),rng, radians(lat),radians(lon),alt, x,y,z, deg=.false.)
+  call aer2ecef(radians(az),radians(el),rng, radians(lat),radians(lon),alt, x,y,z, deg=.false.)
   call assert_allclose([x,y,z],[xl,yl,zl])
 
   call ecef2aer(x,y,z, radians(lat),radians(lon),alt, a,e,r, deg=.false.)
@@ -274,7 +273,7 @@ geodetic_aer: block
   call aer2geodetic(radians(az),radians(el),rng, radians(lat),radians(lon),alt, &
     lt,ln,at, deg=.false.)
   call assert_allclose([degrees(lt),degrees(ln)], [lat1,lon1])
-  call assert_allclose(at, alt1, atol=atol_dist)
+  call assert_allclose(at, alt1, atol=2*atol_dist)
   
   call geodetic2aer(lt,ln, at, radians(lat),radians(lon),alt, a,e,r, deg=.false.)
   call assert_allclose([degrees(a),degrees(e)],[az,el], atol=atol_deg)
