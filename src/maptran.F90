@@ -10,6 +10,8 @@ integer,parameter :: wp=real32
 integer,parameter :: wp=real64
 #elif REALBITS==128
 integer,parameter :: wp=real128
+#else
+integer, parameter :: wp=real64
 #endif
 
 type,public :: Ellipsoid
@@ -23,7 +25,7 @@ type(Ellipsoid), parameter, public :: wgs84Ellipsoid = &
                 SemiminorAxis=6378137._wp * (1._wp - 1._wp / 298.2572235630_wp), &
                 Flattening = 1. / 298.2572235630_wp)
 
-public :: ecef2geodetic, geodetic2ecef, aer2enu, enu2aer, aer2ecef, ecef2aer, &
+public :: wp,ecef2geodetic, geodetic2ecef, aer2enu, enu2aer, aer2ecef, ecef2aer, &
           enu2ecef, ecef2enu, aer2geodetic, geodetic2enu,&
           geodetic2aer,enu2geodetic,degrees,radians, anglesep, &
           lookAtSpheroid
@@ -223,7 +225,7 @@ N = radius_normal(lt, ell)
 
 !! Compute cartesian (geocentric) coordinates given  (curvilinear) geodetic coordinates.
 
-!> singularities
+!> singularities.  Benchmark shows nearly zero runtime impact of these if statements for any real precision
 if (abs(lt) <= epsilon(lt)) then
   cosLat = 1._wp
   sinLat = 0._wp

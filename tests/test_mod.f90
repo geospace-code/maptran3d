@@ -3,7 +3,7 @@ use, intrinsic:: iso_fortran_env, only: compiler_version
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
 use maptran
 use vallado
-use assert, only: wp, assert_allclose
+use assert, only: assert_allclose
 
 implicit none
 
