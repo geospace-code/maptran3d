@@ -1,5 +1,5 @@
 [![DOI](https://zenodo.org/badge/144193557.svg)](https://zenodo.org/badge/latestdoi/144193557)
-[![Build Status](https://travis-ci.com/scivision/maptran.svg?branch=master)](https://travis-ci.com/scivision/maptran)
+[![Build Status](https://travis-ci.com/scivision/maptran3d.svg?branch=master)](https://travis-ci.com/scivision/maptran3d)
 [![Build status](https://ci.appveyor.com/api/projects/status/rtmoplrumvonsscs?svg=true)](https://ci.appveyor.com/project/scivision/maptran)
 
 # Maptran 3D
