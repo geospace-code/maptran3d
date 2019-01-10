@@ -1,6 +1,6 @@
 [![DOI](https://zenodo.org/badge/144193557.svg)](https://zenodo.org/badge/latestdoi/144193557)
 [![Build Status](https://travis-ci.com/scivision/maptran3d.svg?branch=master)](https://travis-ci.com/scivision/maptran3d)
-[![Build status](https://ci.appveyor.com/api/projects/status/rtmoplrumvonsscs?svg=true)](https://ci.appveyor.com/project/scivision/maptran)
+[![Build status](https://ci.appveyor.com/api/projects/status/dp2n2l8hg3ouixkh?svg=true)](https://ci.appveyor.com/project/scivision/maptran3d)
 
 # Maptran 3D
 Modern Fortran 3D coordinate conversions for geospace ecef enu eci.
