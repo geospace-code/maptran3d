@@ -1,5 +1,5 @@
 !! error tolerances are set for single precision, double precision is much more precise.
-
+use, intrinsic:: iso_fortran_env, only: compiler_version
 use, intrinsic:: ieee_arithmetic, only: ieee_value, ieee_quiet_nan
 use maptran
 use vallado
@@ -55,6 +55,8 @@ nan = ieee_value(0._wp, ieee_quiet_nan)
 
 ea = spheroid%SemimajorAxis
 eb = spheroid%SemiminorAxis
+
+print *, compiler_version()
 
 !! ## scalar degrees
      

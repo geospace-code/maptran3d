@@ -1,5 +1,5 @@
 # gfortran >= 5
-language: generic
+language: c
 group: travis_latest
 dist: xenial
 
@@ -17,20 +17,24 @@ addons:
 matrix:
   include:
   - os: linux
-  - os: osx
-    before_install:
-    - brew install gcc > /dev/null
+#  - os: osx
+#    before_install:
+#    - brew install gcc > /dev/null
   - os: windows
-    language: sh
     install: 
     - cd bin
     - cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
     - cmake --build .
 
-install:
-- cd bin
-- cmake ..
-- cmake --build .
+install: cd bin
 
-script: ctest --output-on-failure
+script:
+- cmake -Drealbits=32 ..
+- cmake --build .
+- ctest --output-on-failure
+
+- cmake -Drealbits=64 ..
+- cmake --build .
+- ctest --output-on-failure
+
 
