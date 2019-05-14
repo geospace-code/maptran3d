@@ -19,11 +19,11 @@ matrix:
   - os: linux
   - os: windows
     install: 
-    - cd build
+    - cd $TRAVIS_BUILD_DIR/build
     - cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
-    - cmake --build .
 
-install: cd bin
+install: 
+- cd $TRAVIS_BUILD_DIR/build
 
 script:
 - cmake -Drealbits=32 ..
