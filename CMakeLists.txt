@@ -12,7 +12,7 @@ if(NOT realbits)
 endif()
 
 # --- Maptran library
-add_library(maptran src/maptran.F90 src/vallado.F90)
+add_library(maptran src/maptran.F90 src/aer.f90 src/ecef.f90 src/enu.f90 src/vallado.F90)
 target_compile_options(maptran PRIVATE ${FFLAGS})
 target_compile_definitions(maptran PUBLIC REALBITS=${realbits})
 

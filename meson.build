@@ -8,7 +8,7 @@ if fc.get_id() == 'gcc'
 endif
 
 # --- Maptran library
-maptran = library('maptran', 'src/maptran.F90', 'src/vallado.F90',
+maptran = library('maptran', 'src/maptran.F90', 'src/vallado.F90', 'src/aer.f90', 'src/ecef.f90', 'src/enu.f90',
   fortran_args : REALBITS)
 
 # --- testing
