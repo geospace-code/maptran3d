@@ -10,10 +10,10 @@ endif
 # --- Maptran library
 maptran = library('maptran', 'src/maptran.F90', 'src/vallado.F90',
   fortran_args : REALBITS)
-  
+
 # --- testing
 mtexe = executable('testmaptran', 'tests/test_mod.f90', 'src/assert.F90',
   link_with : maptran,
-  fortran_args : [REALBITS, '-DF08=1'])
+  fortran_args : REALBITS)
 
 test('Maptran', mtexe)

@@ -15,10 +15,10 @@ integer,parameter :: wp=real128
 #else
 integer,parameter :: wp=real64
 #endif
-  
+
 private
 
-public :: wp,isclose, assert_allclose, errorstop
+public :: wp,isclose, assert_allclose
 
 contains
 
@@ -56,14 +56,14 @@ if (present(equal_nan)) n = equal_nan
 !print*,r,a,n,actual,desired
 
 !> sanity check
-if ((r < 0._wp).or.(a < 0._wp)) call errorstop
+if ((r < 0._wp).or.(a < 0._wp)) error stop 'improper tolerances specified'
 !> simplest case -- too unlikely, especially for arrays?
 !isclose = (actual == desired)
 !if (isclose) return
 
 !> equal nan
 if (n) then ! fortran is NOT short circuit logic in general
-  isclose = (ieee_is_nan(actual) .and. ieee_is_nan(desired)) 
+  isclose = (ieee_is_nan(actual) .and. ieee_is_nan(desired))
   if (isclose) return
 endif
 
@@ -77,8 +77,7 @@ end function isclose
 
 
 impure elemental subroutine assert_allclose(actual, desired, rtol, atol, equal_nan, err_msg)
-!! NOTE: with Fortran 2018 this can be Pure
-! 
+
 !! ## inputs
 !!
 !! *  actual: value "measured"
@@ -94,24 +93,19 @@ real(wp), intent(in) :: actual, desired
 real(wp), intent(in), optional :: rtol, atol
 logical, intent(in), optional :: equal_nan
 character(*), intent(in), optional :: err_msg
+character(:), allocatable :: emsg
+
+if (present(err_msg)) then
+  emsg = err_msg
+else
+  emsg = ''
+endif
 
 if (.not.isclose(actual,desired,rtol,atol,equal_nan)) then
-  write(stderr,*) merge(err_msg,'',present(err_msg)),': actual',actual,'desired',desired
-  call errorstop
+  write(stderr,*) emsg // ': actual',actual,'desired',desired
+  error stop
 endif
 
 end subroutine assert_allclose
 
-
-pure subroutine errorstop
-
-#if F08
-error stop
-#else
-stop 1
-#endif
-
-end subroutine errorstop
-
 end module assert
-

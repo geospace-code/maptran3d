@@ -25,7 +25,7 @@ The large real values typical of map coordinates can lead to large error with 32
 ### CMake
 
 ```sh
-cd bin
+cd build
 
 cmake ..
 
