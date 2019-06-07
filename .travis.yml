@@ -1,4 +1,4 @@
-# gfortran >= 5
+# gfortran >= 6
 language: c
 group: travis_latest
 dist: xenial
@@ -11,18 +11,20 @@ env: FC=gfortran
 
 addons:
   apt:
+    sources: ubuntu-toolchain-r-test
     packages:
-    - gfortran
+    - gfortran-6
 
 matrix:
   include:
   - os: linux
+    env: FC=gfortran-6
   - os: windows
-    install: 
+    install:
     - cd $TRAVIS_BUILD_DIR/build
     - cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
 
-install: 
+install:
 - cd $TRAVIS_BUILD_DIR/build
 
 script:
