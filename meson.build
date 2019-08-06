@@ -1,5 +1,5 @@
 project('MapTran', 'fortran',
-  meson_version : '>=0.50',
+  meson_version : '>=0.51.2',
   default_options : ['default_library=static', 'buildtype=release'])
 
 realbits = '-DREALBITS='+get_option('realbits')
