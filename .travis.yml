@@ -1,5 +1,5 @@
 # gfortran >= 6
-language: c
+language: python
 group: travis_latest
 dist: xenial
 
@@ -7,7 +7,7 @@ git:
   depth: 25
   quiet: true
 
-env: FC=gfortran
+env: FC=gfortran-6
 
 addons:
   apt:
@@ -19,21 +19,16 @@ matrix:
   include:
   - os: linux
     env: FC=gfortran-6
-  - os: windows
-    install:
-    - cd $TRAVIS_BUILD_DIR/build
-    - cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
+    script:
+    - meson setup -Drealbits=32 build
+    - meson test -C build
+  - os: linux
+    env: FC=gfortran-6
+    script:
+    - meson setup -Drealbits=64 build
+    - meson test -C build
 
-install:
-- cd $TRAVIS_BUILD_DIR/build
-
-script:
-- cmake -Drealbits=32 ..
-- cmake --build .
-- ctest --output-on-failure
-
-- cmake -Drealbits=64 ..
-- cmake --build .
-- ctest --output-on-failure
-
-
+before_install:
+- python -m pip install meson
+- curl -Ls https://github.com/ninja-build/ninja/releases/download/v1.9.0/ninja-linux.zip -o ninja-linux.zip
+- sudo unzip ninja-linux.zip -d /usr/local/bin/

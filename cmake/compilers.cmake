@@ -2,9 +2,9 @@
 if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
 
 if(NOT WIN32)
-  set(FFLAGS -stand f18 -implicitnone -traceback -warn -heap-arrays)
+  set(FFLAGS -stand f18 -warn declarations -traceback -warn -heap-arrays)
 else()
-  set(FFLAGS /stand:f18 /4Yd /traceback /warn /heap-arrays)
+  set(FFLAGS /stand:f18 /warn:declarations /traceback /warn /heap-arrays)
   # Note: -g is /debug:full for ifort Windows
 endif()
 
@@ -18,9 +18,9 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
     list(APPEND FFLAGS -ffpe-trap=overflow)
   endif()
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
-
+  set(FFLAGS -C -Mdclchk)
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL Flang)
-
+  set(CFLAGS -W)
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL NAG)
   list(APPEND FFLAGS -f2008 -C -colour -gline -nan -info -u)
 endif()

@@ -13,11 +13,11 @@ init:
 - cmd: set PATH=%MINGW_DIR%;%PATH%
 
 install:
-- cd build
-- cmd: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" ..
-- sh: cmake ..
-- cmake --build .
+- cmd: cmake -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND" -B build
+- sh: cmake -B build
+- cmake --build build --parallel
 
 test_script:
-- ctest --output-on-failure
+- cd build
+- ctest --parallel --output-on-failure
 
