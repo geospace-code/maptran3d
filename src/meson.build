@@ -1,0 +1,1 @@
+srcs = files('maptran.F90', 'vallado.F90', 'aer.f90', 'ecef.f90', 'enu.f90')

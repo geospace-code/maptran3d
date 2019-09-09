@@ -1,0 +1,79 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+
+  linuxMeson64:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install Meson
+      run: python -m pip install meson
+    - name: Install packages
+      run: sudo apt install -yq --no-install-recommends ninja-build gfortran
+    - name: Meson configure
+      run: meson setup build -Drealbits=64
+      env:
+        FC: gfortran
+    - name: Meson test
+      run: meson test -C build -v
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Linux_Meson_Testlog64
+        path: build/meson-logs/testlog.txt
+
+  linuxMeson32:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: Install Meson
+      run: python -m pip install meson
+    - name: Install packages
+      run: sudo apt install -yq --no-install-recommends ninja-build gfortran
+    - name: Meson configure
+      run: meson setup build -Drealbits=32
+      env:
+        FC: gfortran
+    - name: Meson test
+      run: meson test -C build -v
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Linux_Meson_Testlog32
+        path: build/meson-logs/testlog.txt
+
+  windowsCmake64:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Cmake configure
+      run: cmake -B build -Drealbits=64 -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND"
+      env:
+        FC: gfortran
+    - name: Cmake build
+      run: cmake --build build --parallel
+    - name: Cmake test
+      run: ctest -V
+      working-directory: build
+
+  windowsCmake32:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Cmake configure
+      run: cmake -B build -Drealbits=32 -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND"
+      env:
+        FC: gfortran
+    - name: Cmake build
+      run: cmake --build build --parallel
+    - name: Cmake test
+      run: ctest -V
+      working-directory: build

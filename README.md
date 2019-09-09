@@ -1,10 +1,11 @@
 [![DOI](https://zenodo.org/badge/144193557.svg)](https://zenodo.org/badge/latestdoi/144193557)
-[![Build Status](https://travis-ci.com/scivision/maptran3d.svg?branch=master)](https://travis-ci.com/scivision/maptran3d)
-[![Build status](https://ci.appveyor.com/api/projects/status/dp2n2l8hg3ouixkh?svg=true)](https://ci.appveyor.com/project/scivision/maptran3d)
+
+[![Actions Status](https://github.com/scivision/maptran3d/workflows/ci/badge.svg)](https://github.com/scivision/maptran3d/actions)
+
 
 # Maptran 3D
 Modern Fortran 3D coordinate conversions for geospace ecef enu eci.
-Similar to Python 
+Similar to Python
 [PyMap3D](https://github.com/scivision/pymap3d)
 and Matlab / GNU Octave
 [Matmap3d](https://github.com/scivision/matmap3d).
@@ -25,11 +26,13 @@ The large real values typical of map coordinates can lead to large error with 32
 ### CMake
 
 ```sh
+cmake -B build
+
+cmake --build build --parallel
+
 cd build
 
-cmake ..
-
-cmake --build .
+ctest -V
 ```
 
 Optionally, verify Fortran functionality:
@@ -40,23 +43,17 @@ ctest -V
 ### Meson
 
 ```sh
-cd bin
+meson build
 
-meson ..
-
-ninja
+meson test -C build
 ```
 
-Optionally, verify Fortran functionality:
-```sh
-ninja test
-``` 
 
 
 ## Usage
 
 The modern Fortran API is simple like PyMap3D and Matlab Mapping Toolbox.
-`elemental` procedures are used throughout to enable seamless support of scalar or array coordinate inputs. 
+`elemental` procedures are used throughout to enable seamless support of scalar or array coordinate inputs.
 
 ```fortran
 use maptran

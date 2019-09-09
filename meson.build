@@ -9,15 +9,17 @@ f18flag = fc.first_supported_argument(['-std=f2018', '-stand f18', '/stand:f18']
 if fc.get_id() == 'gcc'
   add_project_arguments('-fimplicit-none', f18flag, language : 'fortran')
 elif fc.get_id() == 'intel'
-  add_project_arguments('-warn', '-heap-arrays', language : 'fortran')
+  add_project_arguments('-warn', '-heap-arrays', f18flag, language : 'fortran')
 elif fc.get_id() == 'intel-cl'
-  add_project_arguments('/fpp', '/warn', '/heap-arrays', language : 'fortran')
+  add_project_arguments('/fpp', '/warn', '/heap-arrays', f18flag, language : 'fortran')
 elif fc.get_id() == 'pgi'
   add_project_arguments('-C', '-Mdclchk', language : 'fortran')
 endif
 
+subdir('src')
 # --- Maptran library
-maptran = library('maptran', 'src/maptran.F90', 'src/vallado.F90', 'src/aer.f90', 'src/ecef.f90', 'src/enu.f90',
+maptran = library('maptran',
+  sources: srcs,
   fortran_args : realbits)
 
 # --- testing
