@@ -2,7 +2,9 @@ cmake_minimum_required(VERSION 3.7)
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release")
 endif()
-project(MapTran Fortran)
+project(MapTran
+  LANGUAGES Fortran
+  VERSION 1.1.0)
 enable_testing()
 
 include(cmake/compilers.cmake)

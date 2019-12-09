@@ -1,19 +1,15 @@
 project('MapTran', 'fortran',
+  version: '1.1.0',
   meson_version : '>=0.51.2',
-  default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
+  default_options : ['default_library=static', 'buildtype=release', 'warning_level=3', 'fortran_std=f2018'])
 
-realbits = '-DREALBITS='+get_option('realbits')
+realbits = '-DREALBITS=' + get_option('realbits')
 
 fc = meson.get_compiler('fortran')
-f18flag = fc.first_supported_argument(['-std=f2018', '-stand f18', '/stand:f18'])
-if fc.get_id() == 'gcc'
-  add_project_arguments('-fimplicit-none', f18flag, language : 'fortran')
-elif fc.get_id() == 'intel'
-  add_project_arguments('-warn', '-heap-arrays', f18flag, language : 'fortran')
+if fc.get_id() == 'intel'
+  add_project_arguments('-heap-arrays', language : 'fortran')
 elif fc.get_id() == 'intel-cl'
-  add_project_arguments('/fpp', '/warn', '/heap-arrays', f18flag, language : 'fortran')
-elif fc.get_id() == 'pgi'
-  add_project_arguments('-C', '-Mdclchk', language : 'fortran')
+  add_project_arguments('/fpp', '/heap-arrays', language : 'fortran')
 endif
 
 subdir('src')

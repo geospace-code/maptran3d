@@ -1,9 +1,8 @@
-[![DOI](https://zenodo.org/badge/144193557.svg)](https://zenodo.org/badge/latestdoi/144193557)
+# Maptran 3D
 
+[![DOI](https://zenodo.org/badge/144193557.svg)](https://zenodo.org/badge/latestdoi/144193557)
 [![Actions Status](https://github.com/scivision/maptran3d/workflows/ci/badge.svg)](https://github.com/scivision/maptran3d/actions)
 
-
-# Maptran 3D
 Modern Fortran 3D coordinate conversions for geospace ecef enu eci.
 Similar to Python
 [PyMap3D](https://github.com/scivision/pymap3d)
@@ -23,6 +22,14 @@ Note: as with any program or programming language, the accuracy of 32-bit reals 
 The large real values typical of map coordinates can lead to large error with 32-bit reals.
 64-bit reals are the default.
 
+### Meson
+
+```sh
+meson build
+
+meson test -C build
+```
+
 ### CMake
 
 ```sh
@@ -36,19 +43,10 @@ ctest -V
 ```
 
 Optionally, verify Fortran functionality:
+
 ```sh
 ctest -V
 ```
-
-### Meson
-
-```sh
-meson build
-
-meson test -C build
-```
-
-
 
 ## Usage
 
@@ -67,6 +65,7 @@ call geodetic2aer(lat,lon,alt, observer_lat, observer_lon, observer_alt)
 Popular mapping toolbox functions ported to Fortran include the
 following, where the source coordinate system (before the "2") is
 converted to the desired coordinate system:
+
 ```
 aer2ecef  aer2enu  aer2geodetic  aer2ned
 ecef2aer  ecef2enu  ecef2enuv  ecef2geodetic  ecef2ned  ecef2nedv
@@ -79,13 +78,12 @@ lookAtSpheroid
 
 Abbreviations:
 
--   [AER: Azimuth, Elevation, Range](https://en.wikipedia.org/wiki/Spherical_coordinate_system)
--   [ECEF: Earth-centered, Earth-fixed](https://en.wikipedia.org/wiki/ECEF)
--   [ENU: East North Up](https://en.wikipedia.org/wiki/Axes_conventions#Ground_reference_frames:_ENU_and_NED)
--   [NED: North East Down](https://en.wikipedia.org/wiki/North_east_down)
+* [AER: Azimuth, Elevation, Range](https://en.wikipedia.org/wiki/Spherical_coordinate_system)
+* [ECEF: Earth-centered, Earth-fixed](https://en.wikipedia.org/wiki/ECEF)
+* [ENU: East North Up](https://en.wikipedia.org/wiki/Axes_conventions#Ground_reference_frames:_ENU_and_NED)
+* [NED: North East Down](https://en.wikipedia.org/wiki/North_east_down)
 
 ### Caveats
 
 * Atmospheric effects neglected in all functions.
 * Planetary perturbations and nutation etc. not fully considered.
-

@@ -26,9 +26,3 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL NAG)
 endif()
 
 include(CheckFortranSourceCompiles)
-
-check_fortran_source_compiles("use, intrinsic:: ieee_arithmetic; end"
-  f08ieee SRC_EXT f90)
-if(NOT f08ieee)
-  message(FATAL_ERROR "IEEE_arithmetic not supported by " ${CMAKE_Fortran_COMPILER_ID})
-endif()
