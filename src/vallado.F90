@@ -1,6 +1,9 @@
 module vallado
 !! based on http://www.smad.com/vallado/
-use, intrinsic:: iso_fortran_env, only: real32, real64, real128
+use, intrinsic:: iso_fortran_env, only: real32, real64
+#if REALBITS==128
+use, intrinsic :: iso_fortran_env, only : real128
+#endif
 
 implicit none
 private
@@ -27,13 +30,13 @@ contains
 
 elemental subroutine azel2radec(az,el,lat,lon,jd, ra,decl)
 ! convert azimuth, elevation to right ascension, declination
-! 
+!
 ! inputs
 ! ------
 ! az, el: azimuth, elevation (degrees)
 ! lat, lon: geodetic latitude, longitude (degrees)
 ! jd: julian date (decimal)
-! 
+!
 ! outputs
 ! -------
 ! ra, decl: right ascension, declination (degrees)
@@ -54,10 +57,10 @@ Decl = ASIN(SIN(El)*SIN(lat) + &
 
 Sinv = -(SIN(az)*COS(el)*COS(lat)) / &
         (COS(lat)*COS(Decl))
-        
+
 Cosv = (SIN(el) - SIN(lat)*SIN(decl)) / &
        (COS(lat)*COS(Decl))
-       
+
 LHA  = ATAN2(Sinv,Cosv)
 lst = toLST(Lon, JD)
 
@@ -68,14 +71,14 @@ end subroutine azel2radec
 
 
 elemental SUBROUTINE radec2azel(ra,Decl,lat,lon,jd, Az,El)
-! convert right ascension, declination to azimuth, elevation 
-! 
+! convert right ascension, declination to azimuth, elevation
+!
 ! inputs
 ! ------
 ! ra, decl: right ascension, declination (degrees)
 ! lat, lon: geodetic latitude, longitude (degrees)
 ! jd: julian date (decimal)
-! 
+!
 ! outputs
 ! -------
 ! az, el: azimuth, elevation (degrees)
@@ -97,10 +100,10 @@ El = ASIN( SIN(Decl)*SIN(lat) + &
 
 Sinv = -SIN(LHA)*COS(Decl)*COS(lat) / &
       (COS(el)*COS(lat))
-      
+
 Cosv = ( SIN(Decl)-SIN(el)*SIN(lat) ) / &
        (COS(el)*COS(lat))
-       
+
 Az = modulo(degrees(ATAN2(Sinv,Cosv)), 360._wp)
 el = degrees(el)
 
@@ -123,7 +126,7 @@ LST = Lon + toGST(jd)
 LST = modulo(LST, 2*pi )
 
 END function toLST
-      
+
 
 elemental real(wp) function toJulian(t) result(jd)
 ! Gregorian date, time => Julian Date
@@ -146,7 +149,7 @@ IF ( M <= 2 ) THEN
   Y = y - 1
   M = m + 12
 ENDIF
-  
+
 B = 2 - INT(Y*0.01_wp) + INT(INT(Y*0.01_wp)*0.25_wp)
 
 JD= INT( 365.25_wp*(Y + 4716) ) + &
@@ -177,9 +180,9 @@ gst = -6.2e-6_wp*TUT1**3 + &
             0.093104_wp*TUT1**2 + &
            (876600._wp*3600._wp + 8640184.812866_wp)*TUT1 + &
             67310.54841_wp
-            
+
 gst = modulo(radians(gst) / 240._wp, 2*pi) ! 360/86400 = 1/240, to deg, to rad
-  
+
 end function toGST
 
 

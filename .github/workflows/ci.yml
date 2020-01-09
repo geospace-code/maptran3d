@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
 
-  linuxMeson64:
+  linuxMeson:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v1
@@ -16,6 +16,7 @@ jobs:
       run: |
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends gfortran
+
     - run: meson setup build -Drealbits=64
       env:
         FC: gfortran
@@ -26,19 +27,7 @@ jobs:
         name: Linux_Meson_Testlog64
         path: build/meson-logs/testlog.txt
 
-  linuxMeson32:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v1
-    - uses: actions/setup-python@v1
-      with:
-        python-version: '3.x'
-    - run: pip install -r requirements.txt
-    - name: Install packages
-      run: |
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gfortran
-    - run: meson setup build -Drealbits=32
+    - run: meson setup build -Drealbits=32 --wipe
       env:
         FC: gfortran
     - run: meson test -C build -v
@@ -48,24 +37,31 @@ jobs:
         name: Linux_Meson_Testlog32
         path: build/meson-logs/testlog.txt
 
-  windowsCmake64:
+  windowsCmake:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v1
+
     - run: cmake -B build -Drealbits=64 -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND"
       env:
         FC: gfortran
     - run: cmake --build build --parallel
     - run: ctest -V
       working-directory: build
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Windows_CMake_Testlog64
+        path: build/Testing/Temporary/LastTest.log
 
-  windowsCmake32:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v1
     - run: cmake -B build -Drealbits=32 -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND"
       env:
         FC: gfortran
     - run: cmake --build build --parallel
     - run: ctest -V
       working-directory: build
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Windows_CMake_Testlog32
+        path: build/Testing/Temporary/LastTest.log
