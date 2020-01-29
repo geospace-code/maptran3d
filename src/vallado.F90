@@ -7,6 +7,7 @@ use, intrinsic :: iso_fortran_env, only : real128
 
 implicit none
 private
+public:: toGST, toJulian, toLST, radec2azel, azel2radec
 
 #if REALBITS==32
 integer,parameter :: wp=real32
@@ -19,11 +20,11 @@ integer,parameter :: wp=real64
 real(wp), parameter :: pi = 4._wp * atan(1.0_wp)
 
 type,public :: datetime
-  integer :: year, month, day, hour, minute
-  real(wp) :: second
+integer :: year, month, day, hour, minute
+real(wp) :: second
 end type
 
-public:: toGST, toJulian, toLST, radec2azel, azel2radec
+
 contains
 
 elemental subroutine azel2radec(az,el,lat,lon,jd, ra,decl)

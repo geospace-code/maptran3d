@@ -27,7 +27,7 @@ type(Ellipsoid), parameter, public :: wgs84Ellipsoid = &
                 SemiminorAxis=6378137._wp * (1._wp - 1._wp / 298.2572235630_wp), &
                 Flattening = 1. / 298.2572235630_wp)
 
-public :: wp,ecef2geodetic, geodetic2ecef, aer2enu, enu2aer, aer2ecef, ecef2aer, &
+public :: wp, pi, ecef2geodetic, geodetic2ecef, aer2enu, enu2aer, aer2ecef, ecef2aer, &
           enu2ecef, ecef2enu, aer2geodetic, geodetic2enu, enu2uvw,&
           geodetic2aer,enu2geodetic,degrees,radians, anglesep, &
           lookAtSpheroid
@@ -74,7 +74,7 @@ real(wp), intent(out), optional :: alt
 end subroutine ecef2geodetic
 
 module elemental subroutine geodetic2ecef(lat,lon,alt, x,y,z, spheroid, deg)
-real(wp), intent(in) :: lat,lon !< not value due to ifort segfault bug
+real(wp), value :: lat,lon
 real(wp), intent(in) :: alt
 real(wp), intent(out) :: x,y,z
 type(Ellipsoid), intent(in), optional :: spheroid

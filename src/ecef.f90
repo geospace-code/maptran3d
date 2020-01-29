@@ -3,7 +3,6 @@ implicit none
 
 contains
 
-
 module procedure ecef2geodetic
 !! convert ECEF (meters) to geodetic coordintes
 !!
@@ -38,12 +37,12 @@ Beta = atan2(huE / u * z, hypot(x, y))
 !> final output
 if (abs(beta-pi/2) <= epsilon(beta)) then !< singularity
   lat = pi/2
-  cosBeta = 0._wp
-  sinBeta = 1._wp
+  cosBeta = 0
+  sinBeta = 1
 elseif (abs(beta+pi/2) <= epsilon(beta)) then !< singularity
   lat = -pi/2
-  cosBeta = 0._wp
-  sinBeta = -1._wp
+  cosBeta = 0
+  sinBeta = -1
 else
   !> eqn. 13
   eps = ((eb * u - ea * huE + E**2) * sin(Beta)) / (ea * huE * 1 / cos(Beta) - E**2 * cos(Beta))
@@ -91,7 +90,7 @@ module procedure geodetic2ecef
 !!
 !! * x,y,z:  ECEF coordinates of test point(s) (meters)
 
-real(wp) :: N, sinLat, cosLat, cosLon, sinLon, lt, ln
+real(wp) :: N, sinLat, cosLat, cosLon, sinLon
 type(Ellipsoid) :: ell
 logical :: d
 
@@ -101,48 +100,46 @@ if (present(deg)) d = deg
 ell = wgs84Ellipsoid
 if (present(spheroid)) ell = spheroid
 
-lt = lat
-ln = lon
 if (d) then
-  lt = radians(lat)
-  ln = radians(lon)
+  lat = radians(lat)
+  lon = radians(lon)
 endif
 
 !> Radius of curvature of the prime vertical section
-N = radius_normal(lt, ell)
+N = radius_normal(lat, ell)
 
 !! Compute cartesian (geocentric) coordinates given  (curvilinear) geodetic coordinates.
 
 !> singularities.  Benchmark shows nearly zero runtime impact of these if statements for any real precision
-if (abs(lt) <= epsilon(lt)) then
-  cosLat = 1._wp
-  sinLat = 0._wp
-elseif (abs(lt-pi/2) <= epsilon(lt)) then
-  cosLat = 0._wp
-  sinLat = 1._wp
-elseif (abs(lt+pi/2) <= epsilon(lt)) then
-  cosLat = 0._wp
-  sinLat = -1._wp
+if (abs(lat) <= epsilon(lat)) then
+  cosLat = 1
+  sinLat = 0
+elseif (abs(lat-pi/2) <= epsilon(lat)) then
+  cosLat = 0
+  sinLat = 1
+elseif (abs(lat+pi/2) <= epsilon(lat)) then
+  cosLat = 0
+  sinLat = -1
 else
-  cosLat = cos(lt)
-  sinLat = sin(lt)
+  cosLat = cos(lat)
+  sinLat = sin(lat)
 endif
 
-if (abs(ln) <= epsilon(ln)) then
-  cosLon = 1._wp
-  sinLon = 0._wp
-elseif (abs(ln-pi/2) <= epsilon(ln)) then
-  cosLon = 0._wp
-  sinLon = 1._wp
-elseif (abs(ln+pi/2) <= epsilon(ln)) then
-  cosLon = 0._wp
-  sinLon = -1._wp
-elseif (abs(ln+pi) <= epsilon(ln) .or. abs(ln-pi) <= epsilon(ln)) then
-  cosLon = -1._wp
-  sinLon = 0._wp
+if (abs(lon) <= epsilon(lon)) then
+  cosLon = 1
+  sinLon = 0
+elseif (abs(lon-pi/2) <= epsilon(lon)) then
+  cosLon = 0
+  sinLon = 1
+elseif (abs(lon+pi/2) <= epsilon(lon)) then
+  cosLon = 0
+  sinLon = -1
+elseif (abs(lon+pi) <= epsilon(lon) .or. abs(lon-pi) <= epsilon(lon)) then
+  cosLon = -1
+  sinLon = 0
 else
-  cosLon = cos(ln)
-  sinLon = sin(ln)
+  cosLon = cos(lon)
+  sinLon = sin(lon)
 endif
 
 
