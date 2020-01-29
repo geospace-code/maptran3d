@@ -10,8 +10,6 @@ private
 
 #if REALBITS==32
 integer,parameter :: wp=real32
-#elif REALBITS==64
-integer,parameter :: wp=real64
 #elif REALBITS==128
 integer,parameter :: wp=real128
 #else

@@ -19,11 +19,9 @@ maptran = library('maptran',
   fortran_args : realbits)
 
 # --- testing
-if fc.links('block; end block; end', name: 'F2008 Block syntax')
-  mtexe = executable('testmaptran', 'tests/test_mod.f90', 'src/assert.F90',
-    link_with : maptran,
-    fortran_args : realbits)
+mtexe = executable('testmaptran', 'tests/test_mod.f90', 'src/assert.F90',
+  link_with : maptran,
+  fortran_args : realbits)
 
-  test('Maptran'+realbits, mtexe,
-    timeout: 30)
-endif
+test('Maptran'+realbits, mtexe,
+  timeout: 30)

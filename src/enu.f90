@@ -23,9 +23,9 @@ real(wp) x1,y1,z1,x2,y2,z2, dx,dy,dz
 call geodetic2ecef(lat,lon,alt,x1,y1,z1,spheroid,deg)
 call geodetic2ecef(lat0,lon0,alt0,x2,y2,z2,spheroid,deg)
 
-dx = x1-x2;
-dy = y1-y2;
-dz = z1-z2;
+dx = x1-x2
+dy = y1-y2
+dz = z1-z2
 
 call ecef2enuv(dx, dy, dz, lat0, lon0, east, north, up, deg)
 
@@ -111,13 +111,13 @@ real(wp), parameter :: tolerance = 1e-3_wp !< 1mm precision
 
 !> singularity fixes
 e = east
-if (abs(e) < tolerance) e = 0._wp
+if (abs(e) < tolerance) e = 0
 
 n = north
-if (abs(n) < tolerance) n = 0._wp
+if (abs(n) < tolerance) n = 0
 
 u = up
-if (abs(u) < tolerance) u = 0._wp
+if (abs(u) < tolerance) u = 0
 
 r = hypot(e, n)
 slantRange = hypot(r, u)
