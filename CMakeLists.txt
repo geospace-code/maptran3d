@@ -16,13 +16,20 @@ include(cmake/compilers.cmake)
 # --- Maptran library
 add_library(maptran src/maptran.F90 src/aer.f90 src/ecef.f90 src/enu.f90 src/vallado.F90)
 target_compile_definitions(maptran PRIVATE REALBITS=${realbits})
-target_include_directories(maptran INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/include)
+target_include_directories(maptran INTERFACE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+  $<INSTALL_INTERFACE:include>)
 set_target_properties(maptran PROPERTIES
   Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
+add_library(maptran::maptran ALIAS maptran)
+install(TARGETS maptran
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION LIB)
 
 # --- testing
 
-add_executable(testmaptran tests/test_mod.f90 src/assert.F90)
-target_link_libraries(testmaptran maptran)
-add_test(NAME Maptran COMMAND testmaptran)
+add_executable(test_maptran tests/test_mod.f90 src/assert.F90)
+target_link_libraries(test_maptran maptran::maptran)
+target_compile_definitions(test_maptran PRIVATE REALBITS=${realbits})
+add_test(NAME Maptran COMMAND $<TARGET_FILE:test_maptran>)
 set_tests_properties(Maptran PROPERTIES TIMEOUT 30)

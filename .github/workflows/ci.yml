@@ -7,15 +7,16 @@ jobs:
   linuxMeson:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
     - uses: actions/setup-python@v1
       with:
         python-version: '3.x'
+
     - run: pip install -r requirements.txt
     - name: Install packages
       run: |
         sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gfortran
+        sudo apt install -yq --no-install-recommends ninja-build gfortran
 
     - run: meson setup build -Drealbits=64
       env:
@@ -37,12 +38,49 @@ jobs:
         name: Linux_Meson_Testlog32
         path: build/meson-logs/testlog.txt
 
+  linuxCmake:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Install packages
+      run: |
+        sudo apt update -yq
+        sudo apt install -yq --no-install-recommends gfortran
+
+    - run: cmake -B build -Drealbits=64
+      env:
+        FC: gfortran
+    - run: cmake --build build --parallel
+    - run: ctest -V
+      working-directory: build
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Linux_CMake_Testlog64
+        path: build/Testing/Temporary/LastTest.log
+
+    - run: cmake -B build -Drealbits=32
+      env:
+        FC: gfortran
+    - run: cmake --build build --parallel
+    - run: ctest -V
+      working-directory: build
+    - uses: actions/upload-artifact@v1
+      if: failure()
+      with:
+        name: Linux_CMake_Testlog32
+        path: build/Testing/Temporary/LastTest.log
+
   windowsCmake:
+    if: false  # MinGW is broken on Actions
     runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v2
 
-    - run: cmake -B build -Drealbits=64 -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND"
+    - run: cinst -y ninja
+
+    - run: cmake -B build -Drealbits=64 -G Ninja
       env:
         FC: gfortran
     - run: cmake --build build --parallel
@@ -54,7 +92,7 @@ jobs:
         name: Windows_CMake_Testlog64
         path: build/Testing/Temporary/LastTest.log
 
-    - run: cmake -B build -Drealbits=32 -G "MinGW Makefiles" -DCMAKE_SH="CMAKE_SH-NOTFOUND"
+    - run: cmake -B build -Drealbits=32 -G Ninja
       env:
         FC: gfortran
     - run: cmake --build build --parallel

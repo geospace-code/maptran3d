@@ -3,7 +3,6 @@ if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
     set(CMAKE_Fortran_FLAGS "-stand f18 -traceback -warn -heap-arrays ")
   else()
     set(CMAKE_Fortran_FLAGS "/stand:f18 /traceback /warn /heap-arrays ")
-    # Note: -g is /debug:full for ifort Windows
   endif()
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 8)

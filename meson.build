@@ -16,7 +16,8 @@ subdir('src')
 # --- Maptran library
 maptran = library('maptran',
   sources: srcs,
-  fortran_args : realbits)
+  fortran_args : realbits,
+  install: true)
 
 # --- testing
 mtexe = executable('testmaptran', 'tests/test_mod.f90', 'src/assert.F90',
