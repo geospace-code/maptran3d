@@ -1,6 +1,18 @@
 name: ci
 
-on: [push, pull_request]
+on:
+  push:
+    paths:
+      - "**/*.f90"
+      - "**/*.F90"
+      - "**/*.cmake"
+      - "**/CMakeLists.txt"
+  pull_request:
+    paths:
+      - "**/*.f90"
+      - "**/*.F90"
+      - "**/*.cmake"
+      - "**/CMakeLists.txt"
 
 jobs:
 

@@ -1,13 +1,13 @@
 # Maptran 3D
 
 [![DOI](https://zenodo.org/badge/144193557.svg)](https://zenodo.org/badge/latestdoi/144193557)
-[![Actions Status](https://github.com/scivision/maptran3d/workflows/ci/badge.svg)](https://github.com/scivision/maptran3d/actions)
+![Actions Status](https://github.com/geospace-code/maptran3d/workflows/ci/badge.svg)
 
 Modern Fortran 3D coordinate conversions for geospace ecef enu eci.
 Similar to Python
 [PyMap3D](https://github.com/scivision/pymap3d)
 and Matlab / GNU Octave
-[Matmap3d](https://github.com/scivision/matmap3d).
+[Matmap3d](https://github.com/geospace-code/matmap3d).
 
 ## Install
 
