@@ -4,7 +4,7 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(MapTran
   LANGUAGES Fortran
-  VERSION 1.1.0)
+  VERSION 1.1.1)
 enable_testing()
 
 if(NOT realbits)

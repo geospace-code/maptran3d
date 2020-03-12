@@ -90,7 +90,7 @@ module procedure geodetic2ecef
 !!
 !! * x,y,z:  ECEF coordinates of test point(s) (meters)
 
-real(wp) :: N, sinLat, cosLat, cosLon, sinLon
+real(wp) :: N, sinLat, cosLat, cosLon, sinLon, lat, lon
 type(Ellipsoid) :: ell
 logical :: d
 
@@ -100,6 +100,8 @@ if (present(deg)) d = deg
 ell = wgs84Ellipsoid
 if (present(spheroid)) ell = spheroid
 
+lat = llat
+lon = llon
 if (d) then
   lat = radians(lat)
   lon = radians(lon)
@@ -209,12 +211,14 @@ module procedure ecef2enuv
 !!
 !! * east,north,Up:  East, North, Up vector
 
-real(wp) :: t
+real(wp) :: t, lat0, lon0
 logical :: d
 
 d=.true.
 if (present(deg)) d = deg
 
+lat0 = llat0
+lon0 = llon0
 if (d) then
   lat0 = radians(lat0)
   lon0 = radians(lon0)

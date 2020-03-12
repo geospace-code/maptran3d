@@ -77,8 +77,8 @@ if (present(deg)) d = deg
 a = az
 e = el
 if (d) then
-  a = radians(az)
-  e = radians(el)
+  a = radians(a)
+  e = radians(e)
 endif
 
 !> Calculation of AER2ENU

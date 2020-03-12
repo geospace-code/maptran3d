@@ -28,7 +28,7 @@ type(Ellipsoid), parameter, public :: wgs84Ellipsoid = &
                 Flattening = 1. / 298.2572235630_wp)
 
 public :: wp, pi, ecef2geodetic, geodetic2ecef, aer2enu, enu2aer, aer2ecef, ecef2aer, &
-          enu2ecef, ecef2enu, aer2geodetic, geodetic2enu, enu2uvw,&
+          enu2ecef, ecef2enu, ecef2enuv, aer2geodetic, geodetic2enu, enu2uvw,&
           geodetic2aer,enu2geodetic,degrees,radians, anglesep, &
           lookAtSpheroid
 
@@ -73,9 +73,8 @@ real(wp), intent(out) :: lat, lon
 real(wp), intent(out), optional :: alt
 end subroutine ecef2geodetic
 
-module elemental subroutine geodetic2ecef(lat,lon,alt, x,y,z, spheroid, deg)
-real(wp), value :: lat,lon
-real(wp), intent(in) :: alt
+module elemental subroutine geodetic2ecef(llat,llon,alt, x,y,z, spheroid, deg)
+real(wp), intent(in) :: llat,llon, alt
 real(wp), intent(out) :: x,y,z
 type(Ellipsoid), intent(in), optional :: spheroid
 logical, intent(in), optional :: deg
@@ -95,9 +94,9 @@ logical, intent(in), optional :: deg
 real(wp), intent(out) :: east,north,up
 end subroutine ecef2enu
 
-module elemental subroutine ecef2enuv(u, v, w, lat0, lon0, east, north, up, deg)
+module elemental subroutine ecef2enuv(u, v, w, llat0, llon0, east, north, up, deg)
 real(wp), intent(in) :: u,v,w
-real(wp), value :: lat0,lon0
+real(wp), intent(in) :: llat0,llon0
 logical, intent(in), optional :: deg
 real(wp), intent(out) :: east, north, up
 end subroutine ecef2enuv
@@ -209,7 +208,7 @@ call ecef2geodetic(x+srange*u, y+srange*v, z+srange*w, lat, lon, spheroid=ell, d
 end subroutine lookAtSpheroid
 
 
-elemental subroutine enu2uvw(east,north,up, lat0,lon0, u,v,w, deg)
+elemental subroutine enu2uvw(east,north,up, llat0,llon0, u,v,w, deg)
 !! # enu2uvw   convert from ENU to UVW coordinates
 !!
 !! ## Inputs
@@ -223,16 +222,18 @@ elemental subroutine enu2uvw(east,north,up, lat0,lon0, u,v,w, deg)
 !! * u,v,w:   coordinates of test point(s) (meters)
 
 real(wp), intent(in) :: east,north,up
-real(wp), value :: lat0,lon0
+real(wp), intent(in) :: llat0,llon0
 real(wp), intent(out) :: u,v,w
 logical, intent(in), optional :: deg
 
-real(wp) :: t
+real(wp) :: t, lat0, lon0
 logical :: d
 
 d=.true.
 if (present(deg)) d = deg
 
+lat0 = llat0
+lon0 = llon0
 if (d) then
   lat0 = radians(lat0)
   lon0 = radians(lon0)

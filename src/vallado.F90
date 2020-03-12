@@ -27,7 +27,7 @@ end type
 
 contains
 
-elemental subroutine azel2radec(az,el,lat,lon,jd, ra,decl)
+elemental subroutine azel2radec(azz,ell,llat,llon,jd, ra,decl)
 ! convert azimuth, elevation to right ascension, declination
 !
 ! inputs
@@ -40,16 +40,16 @@ elemental subroutine azel2radec(az,el,lat,lon,jd, ra,decl)
 ! -------
 ! ra, decl: right ascension, declination (degrees)
 
-real(wp), value :: az,el,lat,lon
+real(wp), intent(in) :: azz,ell,llat,llon
 real(wp), intent(in) :: jd ! Julian Date
 real(wp), intent(out) :: ra, decl
 
-real(wp) :: lst, lha, sinv, cosv
+real(wp) :: lst, lha, sinv, cosv, az, el, lat, lon
 
-az = radians(az)
-el = radians(el)
-lat = radians(lat)
-lon = radians(lon)
+az = radians(azz)
+el = radians(ell)
+lat = radians(llat)
+lon = radians(llon)
 
 Decl = ASIN(SIN(El)*SIN(lat) + &
             COS(el)*COS(lat)*COS(Az) )
@@ -69,7 +69,7 @@ decl = degrees(decl)
 end subroutine azel2radec
 
 
-elemental SUBROUTINE radec2azel(ra,Decl,lat,lon,jd, Az,El)
+elemental SUBROUTINE radec2azel(rra,dDecl,llat,llon,jd, Az,El)
 ! convert right ascension, declination to azimuth, elevation
 !
 ! inputs
@@ -82,15 +82,16 @@ elemental SUBROUTINE radec2azel(ra,Decl,lat,lon,jd, Az,El)
 ! -------
 ! az, el: azimuth, elevation (degrees)
 
-REAL(wp), value :: ra,Decl,lat, lon
+REAL(wp), intent(in) :: rra,dDecl, llat, llon
 real(wp), intent(in) :: jd
 real(wp), intent(out) :: Az,El
-REAL(wp) :: Sinv, Cosv, LHA
 
-lat = radians(lat)
-lon = radians(lon)
-ra = radians(ra)
-decl = radians(decl)
+REAL(wp) :: Sinv, Cosv, LHA, lat, lon, ra, decl
+
+lat = radians(llat)
+lon = radians(llon)
+ra = radians(rra)
+decl = radians(ddecl)
 
 LHA = toLST(Lon, JD) - ra
 
