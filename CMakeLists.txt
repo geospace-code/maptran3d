@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)  # 3.12 for Fortran submodule
+cmake_minimum_required(VERSION 3.14)
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release")
 endif()
@@ -14,7 +14,7 @@ endif()
 include(cmake/compilers.cmake)
 
 # --- Maptran library
-add_library(maptran src/maptran.F90 src/aer.f90 src/ecef.f90 src/enu.f90 src/vallado.F90)
+add_library(maptran)
 target_compile_definitions(maptran PRIVATE REALBITS=${realbits})
 target_include_directories(maptran INTERFACE
   $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
@@ -25,6 +25,8 @@ add_library(maptran::maptran ALIAS maptran)
 install(TARGETS maptran
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib)
+
+add_subdirectory(src)
 
 # --- testing
 

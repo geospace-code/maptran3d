@@ -1,0 +1,6 @@
+target_sources(maptran PRIVATE maptran.F90 aer.f90 ecef.f90 enu.f90 vallado.F90 utils.f90)
+if(f03nan)
+  target_sources(maptran PRIVATE sphere.f90)
+else()
+  target_sources(maptran PRIVATE no_sphere.f90)
+endif()

@@ -16,3 +16,10 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL PGI)
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL NAG)
   string(APPEND CMAKE_Fortran_FLAGS " -f2018 -C -colour -gline -nan -info -u")
 endif()
+
+include(CheckFortranSourceRuns)
+check_fortran_source_runs("use, intrinsic :: ieee_arithmetic, only: ieee_value, ieee_quiet_nan, ieee_is_nan
+real :: r
+r = ieee_value(1., ieee_quiet_nan)
+if (.not.ieee_is_nan(r)) error stop
+end program" f03nan)
