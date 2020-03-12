@@ -24,7 +24,7 @@ set_target_properties(maptran PROPERTIES
 add_library(maptran::maptran ALIAS maptran)
 install(TARGETS maptran
   ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION LIB)
+  LIBRARY DESTINATION lib)
 
 # --- testing
 
