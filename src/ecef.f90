@@ -144,7 +144,6 @@ else
   sinLon = sin(lon)
 endif
 
-
 x = (N + alt) * cosLat * cosLon
 y = (N + alt) * cosLat * sinLon
 z = (N * (ell%SemiminorAxis / ell%SemimajorAxis)**2 + alt) * sinLat

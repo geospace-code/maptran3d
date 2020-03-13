@@ -416,23 +416,23 @@ real(wp), intent(in) :: az, el, rng, lat, lon, alt
 real(wp) :: x,y,z
 
 call aer2ecef(az, el, rng, lat, lon, alt, x, y, z)
-call assert_allclose([x, y, z], [xl,yl,zl])
+call assert_allclose([x, y, z], [xl,yl,zl], err_msg='aer2ecef1')
 
 call aer2ecef(0._wp, -90._wp, 1._wp, 0._wp, 0._wp, -1._wp, x, y, z)
-call assert_allclose([x, y, z], [ea-1._wp, 0._wp, 0._wp], atol=1e-6_wp)
+call assert_allclose([x, y, z], [ea-1._wp, 0._wp, 0._wp], atol=1e-6_wp, err_msg='aer2ecef2')
 
 call aer2ecef(0._wp, -90._wp, 1._wp, 0._wp, 90._wp, -1._wp, x, y, z)
-call assert_allclose([x,y,z],[0._wp, ea-1._wp, 0._wp], atol=1e-6_wp)
+call assert_allclose([x,y,z],[0._wp, ea-1._wp, 0._wp], atol=1e-6_wp, err_msg='aer2ecef3')
 
 call aer2ecef(0._wp, -90._wp, 1._wp, 90._wp, 0._wp, -1._wp, x, y, z)
-call assert_allclose([x,y,z],[0._wp, 0._wp, eb-1._wp], atol=1e-6_wp)
+call assert_allclose([x,y,z],[0._wp, 0._wp, eb-1._wp], atol=1e-6_wp, err_msg='aer2ecef4')
 
 call aer2ecef(0._wp, -90._wp, 1._wp, 0._wp, 90._wp, -1._wp, x, y, z)
-call assert_allclose([x,y,z],[0._wp, ea-1._wp, 0._wp], atol=1e-6_wp)
+call assert_allclose([x,y,z],[0._wp, ea-1._wp, 0._wp], atol=1e-6_wp, err_msg='aer2ecef5')
 
 call aer2ecef(0._wp, -90._wp, 1._wp, 0._wp, 45._wp, -1._wp, x, y, z)
 call assert_allclose([x,y,z], &
-        [(ea-1._wp)/sqrt(2._wp), (ea-1._wp)/sqrt(2._wp), 0._wp], atol=1e-6_wp)
+        [(ea-1._wp)/sqrt(2._wp), (ea-1._wp)/sqrt(2._wp), 0._wp], atol=1e-6_wp, err_msg='aer2ecef6')
 
 end subroutine test_aer2ecef
 

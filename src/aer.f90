@@ -46,7 +46,6 @@ module procedure aer2ecef
 
 real(wp) :: x0,y0,z0, e,n,u,dx,dy,dz
 
-
 !> Origin of the local system in geocentric coordinates.
 call geodetic2ecef(lat0, lon0, alt0,x0, y0, z0, spheroid,deg)
 !> Convert Local Spherical AER to ENU

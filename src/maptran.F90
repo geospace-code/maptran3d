@@ -165,14 +165,14 @@ end function haversine
 elemental real(wp) function degrees(rad)
 real(wp), intent(in) :: rad
 
-degrees = 180._wp / pi * rad
+degrees = 180 / pi * rad
 end function degrees
 
 
 elemental real(wp) function radians(deg)
 real(wp), intent(in) :: deg
 
-radians = pi / 180._wp * deg
+radians = pi / 180 * deg
 end function radians
 
 end module maptran

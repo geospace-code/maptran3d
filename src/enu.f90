@@ -124,7 +124,7 @@ slantRange = hypot(r, u)
 
 !> radians
 elev = atan2(u, r)
-az = modulo(atan2(e, n), 2._wp * pi)
+az = modulo(atan2(e, n), 2 * pi)
 
 d=.true.
 if (present(deg)) d = deg
