@@ -4,7 +4,8 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 project(MapTran
   LANGUAGES Fortran
-  VERSION 1.1.1)
+  VERSION 1.1.1
+  HOMEPAGE_URL https://github.com/geospace-code/maptran3d)
 enable_testing()
 
 if(NOT realbits)
@@ -12,6 +13,22 @@ if(NOT realbits)
 endif()
 
 include(cmake/compilers.cmake)
+
+# OPTIONAL link-time optimization
+if(CMAKE_BUILD_TYPE STREQUAL Release)
+	include(CheckIPOSupported)
+	check_ipo_supported(RESULT lto_ok OUTPUT _err)
+
+	if(lto_ok)
+		message(STATUS "IPO / LTO enabled")
+    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+  else()
+    message(STATUS "IPO / LTO disabled: ${_err}")
+	endif()
+endif()
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+set(CTEST_TEST_TIMEOUT 30)
 
 # --- Maptran library
 add_library(maptran)
@@ -27,11 +44,4 @@ install(TARGETS maptran
   LIBRARY DESTINATION lib)
 
 add_subdirectory(src)
-
-# --- testing
-
-add_executable(test_maptran tests/test_mod.f90 src/assert.F90)
-target_link_libraries(test_maptran maptran::maptran)
-target_compile_definitions(test_maptran PRIVATE REALBITS=${realbits})
-add_test(NAME Maptran COMMAND $<TARGET_FILE:test_maptran>)
-set_tests_properties(Maptran PROPERTIES TIMEOUT 30)
+add_subdirectory(src/tests)

@@ -1,5 +1,5 @@
-!! Benchmark speed of arrays
-
+program benchmark_maptran
+!! Benchmark speed of array
 use, intrinsic:: iso_fortran_env, only: int64, real64
 use maptran, only: wp, geodetic2ecef
 
@@ -10,7 +10,6 @@ real(real64) :: time
 integer :: N, i
 real(wp), allocatable, dimension(:,:,:) :: lat, lon, alt, x, y, z
 character(8) :: buf
-real(wp) :: r(3)
 
 N = 100
 call get_command_argument(1, buf, status=i)

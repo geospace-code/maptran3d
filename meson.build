@@ -19,10 +19,4 @@ maptran = library('maptran',
   fortran_args : realbits,
   install: true)
 
-# --- testing
-mtexe = executable('testmaptran', 'tests/test_mod.f90', 'src/assert.F90',
-  link_with : maptran,
-  fortran_args : realbits)
-
-test('Maptran'+realbits, mtexe,
-  timeout: 30)
+subdir('src/tests')

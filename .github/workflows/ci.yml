@@ -20,15 +20,13 @@ jobs:
       with:
         python-version: '3.x'
 
-    - run: pip install -r requirements.txt
+    - run: pip install meson
     - name: Install packages
       run: |
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends ninja-build gfortran
 
-    - run: meson setup build -Drealbits=64
-      env:
-        FC: gfortran
+    - run: meson setup build
     - run: meson test -C build -v
     - uses: actions/upload-artifact@v1
       if: failure()
@@ -36,30 +34,18 @@ jobs:
         name: Linux_Meson_Testlog64
         path: build/meson-logs/testlog.txt
 
-    - run: meson setup build -Drealbits=32 --wipe
-      env:
-        FC: gfortran
-    - run: meson test -C build -v
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Linux_Meson_Testlog32
-        path: build/meson-logs/testlog.txt
 
   linuxCmake:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-
-    - name: Install packages
-      run: |
+    - run: |
         sudo apt update -yq
         sudo apt install -yq --no-install-recommends gfortran
 
     - run: cmake -B build -Drealbits=64
-      env:
-        FC: gfortran
     - run: cmake --build build --parallel
+
     - run: ctest -V
       working-directory: build
     - uses: actions/upload-artifact@v1
@@ -69,9 +55,8 @@ jobs:
         path: build/Testing/Temporary/LastTest.log
 
     - run: cmake -B build -Drealbits=32
-      env:
-        FC: gfortran
     - run: cmake --build build --parallel
+
     - run: ctest -V
       working-directory: build
     - uses: actions/upload-artifact@v1
@@ -81,33 +66,19 @@ jobs:
         path: build/Testing/Temporary/LastTest.log
 
   windowsCmake:
-    if: false  # MinGW is broken on Actions
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
 
     - run: cinst -y ninja
 
-    - run: cmake -B build -Drealbits=64 -G Ninja
-      env:
-        FC: gfortran
+    - run: cmake -B build -G Ninja
     - run: cmake --build build --parallel
+
     - run: ctest -V
       working-directory: build
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
         name: Windows_CMake_Testlog64
-        path: build/Testing/Temporary/LastTest.log
-
-    - run: cmake -B build -Drealbits=32 -G Ninja
-      env:
-        FC: gfortran
-    - run: cmake --build build --parallel
-    - run: ctest -V
-      working-directory: build
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Windows_CMake_Testlog32
         path: build/Testing/Temporary/LastTest.log
