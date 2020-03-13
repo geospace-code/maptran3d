@@ -16,29 +16,11 @@ az = 33, el=70, rng= 1e3_wp, &
 x0 = 660.6752518e3_wp, y0 = -4700.9486832e3_wp, z0 = 4245.7376622e3_wp, &
 xl = 6.609301927610815e+5, yl = -4.701424222957011e6, zl = 4.246579604632881e+06, & !< aer2ecef
 east = 186.277521_wp, north = 286.84222_wp, up = 939.69262_wp, & !< aer2enu
-lat1 = 42.0026_wp, lon1 = -81.9978_wp, alt1 = 1.1397e3_wp, & !< aer2geodetic
-azi = 180.1_wp,  eli = 80._wp, &
 ha = 45.482789587392013_wp
 
-integer,parameter :: N = 3
-real(wp), dimension(N), parameter :: alat = [42,52,62], &
-                                     deg0 = [15,30,45], &
-                                     aaz = [33,43,53]
-
 type(datetime), parameter :: t0 = datetime(2014,4,6,8,0,0) !< UTC
-real(wp), parameter ::  jd0 = 2456753.833333_wp
 
-
-real(wp) :: azrd,elrd,rae,dae,jd, ea, eb, atol_dist, atol_deg
-
-
-real(wp), dimension(N) :: &
-ax1, ay1, aaaz1, ax2, ay2,az2, aaaz2, ax3,ay3,aaaz3, &
-ae1, an1, au1, ae2,an2,au2, &
-alat2,alon2,aalt2, alat3,alon3,aalt3, alat4,alon4,aalt4, &
-aaz2, ael2, arng2, aaz3,ael3,arng3, aaz4,ael4,arng4
-
-
+real(wp) :: ea, eb, atol_dist, atol_deg
 
 select case (wp)
   case (real32)
@@ -60,10 +42,7 @@ print '(A,2ES12.3)', 'Abs_tol dist, deg:',atol_dist, atol_deg
 ea = spheroid%SemimajorAxis
 eb = spheroid%SemiminorAxis
 
-call assert_allclose(degrees(radians(deg0)), deg0, err_msg='deg<->rad')
-print *, "OK: degrees < = > radians"
-
-!! ## scalar degrees
+!! scalar degrees
 
 call test_enu2aer(east,north, up, az,el,rng)
 print *, "OK: enu2aer"
@@ -80,7 +59,7 @@ print *, "OK: geodetic2ecef"
 call test_ecef2geodetic(x0,y0,z0)
 print *, "OK: ecef2geodetic"
 
-call test_enu_ecef(east, north, up, lat, lon, alt)
+call test_enu_ecef(east, north, up, lat, lon, alt, xl, yl, zl)
 print *, "OK enu2ecef, ecef2enu"
 
 call test_ecef2aer(xl, yl, zl, lat, lon, alt)
@@ -101,7 +80,7 @@ call test_array()
 print *, "OK: test_array"
 
 !! ## Vallado Tests
-call test_vallado()
+call test_vallado(t0)
 print *, "OK: vallado"
 
 !! ## Meeus tests
@@ -115,7 +94,14 @@ print *,'OK: Maptran ',storage_size(0._wp),' bits'
 contains
 
 
-subroutine test_vallado()
+subroutine test_vallado(t0)
+
+type(datetime), intent(in) :: t0
+
+real(wp), parameter :: azi = 180.1_wp,  eli = 80, jd0 = 2456753.833333_wp
+
+real(wp) :: azrd,elrd,rae,dae,jd
+
 jd = toJulian(t0)
 
 !! http://aa.usno.navy.mil/jdconverter?ID=AA&year=2014&month=4&day=6&era=1&hr=8&min=0&sec=0.0
@@ -156,6 +142,20 @@ end subroutine test_geodetic_enu
 
 subroutine test_array()
 
+integer,parameter :: N = 3
+
+real(wp), dimension(N), parameter :: alat = [42,52,62], &
+                                    deg0 = [15,30,45], &
+                                    aaz = [33,43,53]
+real(wp), dimension(N) :: &
+ax1, ay1, aaaz1, ax2, ay2,az2, aaaz2, ax3,ay3,aaaz3, &
+ae1, an1, au1, ae2,an2,au2, &
+alat2,alon2,aalt2, alat3,alon3,aalt3, alat4,alon4,aalt4, &
+aaz2, ael2, arng2, aaz3,ael3,arng3, aaz4,ael4,arng4
+
+call assert_allclose(degrees(radians(deg0)), deg0, err_msg='deg<->rad')
+print *, "OK: degrees < = > radians"
+
 call geodetic2ecef(alat,lon,alt,ax1,ay1,aaaz1)
 call aer2enu(aaz, el, rng, ae1, an1, au1)
 call aer2ecef(aaz, el, rng, lat,lon,alt, ax2, ay2, aaaz2)
@@ -174,6 +174,8 @@ end subroutine test_array
 subroutine test_geodetic_aer(lat, lon, alt)
 real(wp), intent(in) :: lat, lon, alt
 real(wp) :: lt, ln, at, a, e, r
+
+real(wp), parameter :: lat1 = 42.0026_wp, lon1 = -81.9978_wp, alt1 = 1.1397e3_wp
 
 call aer2geodetic(0._wp, -90._wp, 1._wp, lat, lon, alt, lt,ln,at)
 call assert_allclose([lt,ln], [lat, lon])
@@ -242,8 +244,8 @@ call assert_allclose(r, rng, atol=atol_dist)
 end subroutine test_ecef2aer
 
 
-subroutine test_enu_ecef(east, north, up, lat, lon, alt)
-real(wp), intent(in) :: east, north, up, lat, lon, alt
+subroutine test_enu_ecef(east, north, up, lat, lon, alt, xl, yl, zl)
+real(wp), intent(in) :: east, north, up, lat, lon, alt, xl, yl, zl
 real(wp) :: x, y, z, e, n, u
 
 call enu2ecef(east, north, up, lat,lon,alt, x, y, z)
