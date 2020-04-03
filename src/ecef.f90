@@ -1,5 +1,6 @@
 submodule (maptran) ecef
-implicit none
+
+implicit none (external)
 
 contains
 

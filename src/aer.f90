@@ -1,5 +1,6 @@
 submodule (maptran) aer
-implicit none
+
+implicit none (external)
 
 contains
 

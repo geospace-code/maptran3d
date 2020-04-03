@@ -1,5 +1,6 @@
 submodule (maptran) utils
-implicit none
+
+implicit none (external)
 
 contains
 

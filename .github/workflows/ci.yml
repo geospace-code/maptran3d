@@ -8,7 +8,6 @@ on:
       - "**/*.cmake"
       - "**/CMakeLists.txt"
   pull_request:
-  release:
 
 jobs:
 
@@ -24,9 +23,12 @@ jobs:
     - name: Install packages
       run: |
         sudo apt update -yq
-        sudo apt install -yq --no-install-recommends ninja-build gfortran
+        sudo apt install -yq --no-install-recommends ninja-build
 
     - run: meson setup build
+      env:
+        FC: gfortran-9
+
     - run: meson test -C build -v
     - uses: actions/upload-artifact@v1
       if: failure()
@@ -39,11 +41,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - run: |
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends gfortran
 
     - run: cmake -B build -Drealbits=64
+      env:
+        FC: gfortran-9
+
     - run: cmake --build build --parallel
 
     - run: ctest -V
@@ -55,6 +57,9 @@ jobs:
         path: build/Testing/Temporary/LastTest.log
 
     - run: cmake -B build -Drealbits=32
+      env:
+        FC: gfortran-9
+
     - run: cmake --build build --parallel
 
     - run: ctest -V
@@ -72,11 +77,7 @@ jobs:
 
     - run: cinst -y ninja
 
-    - run: cmake -B build -G Ninja
-    - run: cmake --build build --parallel
-
-    - run: ctest -V
-      working-directory: build
+    - run: ctest -S setup.cmake -VV
     - uses: actions/upload-artifact@v1
       if: failure()
       with:

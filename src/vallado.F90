@@ -5,7 +5,7 @@ use, intrinsic:: iso_fortran_env, only: real32, real64
 use, intrinsic :: iso_fortran_env, only : real128
 #endif
 
-implicit none
+implicit none (external)
 private
 public:: toGST, toJulian, toLST, radec2azel, azel2radec
 

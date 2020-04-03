@@ -8,7 +8,7 @@ use, intrinsic :: iso_fortran_env, only : real128
 use, intrinsic:: iso_fortran_env, only: wp=>real64
 #endif
 
-implicit none
+implicit none (external)
 private
 public :: wp, pi, ecef2geodetic, geodetic2ecef, aer2enu, enu2aer, aer2ecef, ecef2aer, &
           enu2ecef, ecef2enu, ecef2enuv, aer2geodetic, geodetic2enu, enu2uvw,&

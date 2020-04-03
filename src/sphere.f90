@@ -1,5 +1,6 @@
 submodule (maptran) sphere
-implicit none
+
+implicit none (external)
 
 contains
 

@@ -3,7 +3,7 @@ program benchmark_maptran
 use, intrinsic:: iso_fortran_env, only: int64, real64
 use maptran, only: wp, geodetic2ecef
 
-implicit none
+implicit none (external)
 
 integer(int64) :: tic, toc, rate
 real(real64) :: time
