@@ -6,7 +6,7 @@ use maptran
 use vallado
 use assert, only: assert_allclose
 
-implicit none (external)
+implicit none (type, external)
 
 type(Ellipsoid), parameter :: spheroid = wgs84Ellipsoid
 

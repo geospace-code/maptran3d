@@ -1,9 +1,7 @@
 project('MapTran', 'fortran',
-  version: '1.1.1',
+  version: '1.1.2',
   meson_version : '>=0.51.2',
-  default_options : ['default_library=static', 'buildtype=release', 'warning_level=3'])
-
-realbits = '-DREALBITS=' + get_option('realbits')
+  default_options : ['default_library=static', 'buildtype=release', 'warning_level=2'])
 
 fc = meson.get_compiler('fortran')
 if fc.get_id() == 'intel'
@@ -12,11 +10,15 @@ elif fc.get_id() == 'intel-cl'
   add_project_arguments('/fpp', '/heap-arrays', language : 'fortran')
 endif
 
+wp_real = get_option('realbits')=='32' ? 'wp=>real32' : 'wp=>real64'
+
+wp_conf = configuration_data()
+wp_conf.set('wp_real', wp_real)
+
 subdir('src')
 # --- Maptran library
 maptran = library('maptran',
-  sources: srcs,
-  fortran_args : realbits,
-  install: true)
+sources: srcs,
+install: true)
 
 subdir('src/tests')

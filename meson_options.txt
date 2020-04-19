@@ -1,1 +1,1 @@
-option('realbits', type : 'combo', choices : ['64', '32', '128'], description: 'bits of precision for real')
+option('realbits', type : 'combo', choices : ['64', '32'], description: 'bits of precision for real')

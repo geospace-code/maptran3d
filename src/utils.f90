@@ -1,6 +1,6 @@
 submodule (maptran) utils
 
-implicit none (external)
+implicit none (type, external)
 
 contains
 

@@ -12,15 +12,20 @@ and Matlab / GNU Octave
 ## Install
 
 Requires Fortran 2008 compiler, such as `gfortran`, `ifort`, PGI, `nagfor`, `flang`, Cray, IBM XL, etc.
-Use CMake or Meson to build the suite, which creates `libmaptran.so` or similar, a shared library with compile-time polymorphism enabled by configuring Fortran preprocessor with one of:
+Use CMake or Meson to build the suite, which creates `libmaptran.a` or similar.
+Compile-time polymorphism enabled by configuring with one of:
 
 * `-Drealbits=32`
 * `-Drealbits=64`
-* `-Drealbits=128`
 
-Note: as with any program or programming language, the accuracy of 32-bit reals can be significantly degraded, by orders of magnitude compared to 64-bit reals that are the default for many years.
 The large real values typical of map coordinates can lead to large error with 32-bit reals.
-64-bit reals are the default.
+64-bit real is the default.
+
+### CMake
+
+```sh
+ctest -S setup.cmake -VV
+```
 
 ### Meson
 
@@ -28,24 +33,6 @@ The large real values typical of map coordinates can lead to large error with 32
 meson build
 
 meson test -C build
-```
-
-### CMake
-
-```sh
-cmake -B build
-
-cmake --build build --parallel
-
-cd build
-
-ctest -V
-```
-
-Optionally, verify Fortran functionality:
-
-```sh
-ctest -V
 ```
 
 ## Usage

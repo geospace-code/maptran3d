@@ -1,14 +1,9 @@
 module maptran
 use, intrinsic:: ieee_arithmetic, only: ieee_quiet_nan, ieee_value
-#if REALBITS==32
-use, intrinsic:: iso_fortran_env, only: wp=>real32
-#elif REALBITS==128
-use, intrinsic :: iso_fortran_env, only : real128
-#else
-use, intrinsic:: iso_fortran_env, only: wp=>real64
-#endif
+use, intrinsic:: iso_fortran_env, only: @wp_real@
 
-implicit none (external)
+
+implicit none (type, external)
 private
 public :: wp, pi, ecef2geodetic, geodetic2ecef, aer2enu, enu2aer, aer2ecef, ecef2aer, &
           enu2ecef, ecef2enu, ecef2enuv, aer2geodetic, geodetic2enu, enu2uvw,&

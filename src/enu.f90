@@ -1,6 +1,6 @@
 submodule (maptran) enu
 
-implicit none (external)
+implicit none (type, external)
 
 contains
 

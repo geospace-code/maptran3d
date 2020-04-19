@@ -1,47 +1,46 @@
 cmake_minimum_required(VERSION 3.14)
+
 if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE Release CACHE STRING "Debug or Release")
+  set(CMAKE_BUILD_TYPE Release CACHE STRING "default build type")
 endif()
+
 project(MapTran
   LANGUAGES Fortran
-  VERSION 1.1.1
+  VERSION 1.1.2
   HOMEPAGE_URL https://github.com/geospace-code/maptran3d)
-enable_testing()
 
-if(NOT realbits)
-  set(realbits 64)
-endif()
+enable_testing()
+include(CTest)
+include(FeatureSummary)
 
 include(cmake/compilers.cmake)
 
-# OPTIONAL link-time optimization
-if(CMAKE_BUILD_TYPE STREQUAL Release)
-	include(CheckIPOSupported)
-	check_ipo_supported(RESULT lto_ok OUTPUT _err)
-
-	if(lto_ok)
-		message(STATUS "IPO / LTO enabled")
-    set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-  else()
-    message(STATUS "IPO / LTO disabled: ${_err}")
-	endif()
+if(realbits EQUAL 32)
+  set(wp_real "wp=>real32")
+else()
+  set(wp_real "wp=>real64")
 endif()
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+# OPTIONAL link-time optimization
+if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  if(CMAKE_BUILD_TYPE STREQUAL Release)
+    include(CheckIPOSupported)
+    check_ipo_supported(RESULT lto_ok OUTPUT _err)
+
+    if(lto_ok)
+      set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
+    endif()
+  endif()
+endif()
+
 set(CTEST_TEST_TIMEOUT 30)
 
 # --- Maptran library
-add_library(maptran)
-target_compile_definitions(maptran PRIVATE REALBITS=${realbits})
-target_include_directories(maptran INTERFACE
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
-set_target_properties(maptran PROPERTIES
-  Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
-add_library(maptran::maptran ALIAS maptran)
-install(TARGETS maptran
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib)
-
 add_subdirectory(src)
-add_subdirectory(src/tests)
+
+if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  add_subdirectory(src/tests)
+
+  add_feature_info(ipo lto_ok "Interprocess / Link optimization ${_err}")
+  feature_summary(WHAT ALL)
+endif()

@@ -19,11 +19,7 @@ jobs:
       with:
         python-version: '3.x'
 
-    - run: pip install meson
-    - name: Install packages
-      run: |
-        sudo apt update -yq
-        sudo apt install -yq --no-install-recommends ninja-build
+    - run: pip install meson ninja
 
     - run: meson setup build
       env:
@@ -46,10 +42,7 @@ jobs:
       env:
         FC: gfortran-9
 
-    - run: cmake --build build --parallel
-
-    - run: ctest -V
-      working-directory: build
+    - run: ctest -S setup.cmake -VV
     - uses: actions/upload-artifact@v1
       if: failure()
       with:
@@ -60,10 +53,7 @@ jobs:
       env:
         FC: gfortran-9
 
-    - run: cmake --build build --parallel
-
-    - run: ctest -V
-      working-directory: build
+    - run: ctest -S setup.cmake -VV
     - uses: actions/upload-artifact@v1
       if: failure()
       with:

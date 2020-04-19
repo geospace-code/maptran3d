@@ -2,18 +2,10 @@ module assert
 !! Gfortran >= 6 needed for ieee_arithmetic: ieee_is_nan
 
 use, intrinsic:: iso_c_binding, only: sp=>c_float, dp=>c_double
-use, intrinsic:: iso_fortran_env, only: stderr=>error_unit, real32, real64, real128
+use, intrinsic:: iso_fortran_env, only: stderr=>error_unit, @wp_real@
 use, intrinsic:: ieee_arithmetic, only: ieee_is_finite, ieee_is_nan
 
-implicit none (external)
-
-#if REALBITS==32
-integer,parameter :: wp=real32
-#elif REALBITS==128
-integer,parameter :: wp=real128
-#else
-integer,parameter :: wp=real64
-#endif
+implicit none (type, external)
 
 private
 
