@@ -7,7 +7,7 @@ on:
       - "**/*.F90"
       - "**/*.cmake"
       - "**/CMakeLists.txt"
-  pull_request:
+
 
 jobs:
 
@@ -64,8 +64,6 @@ jobs:
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
-
-    - run: cinst -y ninja
 
     - run: ctest -S setup.cmake -VV
     - uses: actions/upload-artifact@v1

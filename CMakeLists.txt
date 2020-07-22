@@ -33,8 +33,6 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   endif()
 endif()
 
-set(CTEST_TEST_TIMEOUT 30)
-
 # --- Maptran library
 add_subdirectory(src)
 
