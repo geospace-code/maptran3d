@@ -6,7 +6,7 @@
 Modern Fortran 3D coordinate conversions for geospace ecef enu eci.
 Similar to Python
 [PyMap3D](https://github.com/scivision/pymap3d)
-and Matlab / GNU Octave
+and Matlab
 [Matmap3d](https://github.com/geospace-code/matmap3d).
 
 ## Install

@@ -14,7 +14,7 @@ set_target_properties(maptran PROPERTIES
   LIBRARY_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR}
   Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 
-  add_library(maptran::maptran ALIAS maptran)
+add_library(maptran::maptran ALIAS maptran)
 
 install(TARGETS maptran
   ARCHIVE DESTINATION lib

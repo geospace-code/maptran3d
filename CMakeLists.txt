@@ -9,9 +9,7 @@ project(MapTran
   VERSION 1.1.2
   HOMEPAGE_URL https://github.com/geospace-code/maptran3d)
 
-enable_testing()
 include(CTest)
-include(FeatureSummary)
 
 include(cmake/compilers.cmake)
 
@@ -21,7 +19,13 @@ else()
   set(wp_real "wp=>real64")
 endif()
 
-# OPTIONAL link-time optimization
+# --- Maptran library
+add_subdirectory(src)
+
+if(BUILD_TESTING)
+  add_subdirectory(src/tests)
+endif()
+
 if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
   if(CMAKE_BUILD_TYPE STREQUAL Release)
     include(CheckIPOSupported)
@@ -31,14 +35,8 @@ if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
       set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
     endif()
   endif()
-endif()
 
-# --- Maptran library
-add_subdirectory(src)
-
-if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  add_subdirectory(src/tests)
-
+  include(FeatureSummary)
   add_feature_info(ipo lto_ok "Interprocess / Link optimization ${_err}")
   feature_summary(WHAT ALL)
 endif()
