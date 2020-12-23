@@ -25,18 +25,3 @@ add_subdirectory(src)
 if(BUILD_TESTING)
   add_subdirectory(src/tests)
 endif()
-
-if(PROJECT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  if(CMAKE_BUILD_TYPE STREQUAL Release)
-    include(CheckIPOSupported)
-    check_ipo_supported(RESULT lto_ok OUTPUT _err)
-
-    if(lto_ok)
-      set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
-    endif()
-  endif()
-
-  include(FeatureSummary)
-  add_feature_info(ipo lto_ok "Interprocess / Link optimization ${_err}")
-  feature_summary(WHAT ALL)
-endif()

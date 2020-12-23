@@ -15,22 +15,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-python@v1
+    - uses: actions/setup-python@v2
       with:
         python-version: '3.x'
 
     - run: pip install meson ninja
 
     - run: meson setup build
-      env:
-        FC: gfortran-9
 
     - run: meson test -C build -v
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Linux_Meson_Testlog64
-        path: build/meson-logs/testlog.txt
 
 
   linuxCmake:
@@ -39,26 +32,10 @@ jobs:
     - uses: actions/checkout@v2
 
     - run: cmake -B build -Drealbits=64
-      env:
-        FC: gfortran-9
-
     - run: ctest -S setup.cmake -VV
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Linux_CMake_Testlog64
-        path: build/Testing/Temporary/LastTest.log
 
     - run: cmake -B build -Drealbits=32
-      env:
-        FC: gfortran-9
-
     - run: ctest -S setup.cmake -VV
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Linux_CMake_Testlog32
-        path: build/Testing/Temporary/LastTest.log
 
   windowsCmake:
     runs-on: windows-latest
@@ -66,8 +43,3 @@ jobs:
     - uses: actions/checkout@v2
 
     - run: ctest -S setup.cmake -VV
-    - uses: actions/upload-artifact@v1
-      if: failure()
-      with:
-        name: Windows_CMake_Testlog64
-        path: build/Testing/Temporary/LastTest.log
