@@ -32,12 +32,18 @@ jobs:
     - uses: actions/checkout@v2
 
     - run: cmake -B build -Drealbits=64
-    - run: ctest -S setup.cmake -VV
+    - run: cmake --build build
+    - run: ctest --output-on-failure
+      working-directory: build
 
     - run: cmake -B build -Drealbits=32
-    - run: ctest -S setup.cmake -VV
+    - run: cmake --build build
+    - run: ctest --output-on-failure
+      working-directory: build
+
 
   windowsCmake:
+    needs: linuxCmake
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
