@@ -1,7 +1,8 @@
 configure_file(maptran.in.f90 maptran.f90)
 configure_file(vallado.in.f90 vallado.f90)
 
-add_library(maptran
+add_library(maptran)
+target_sources(maptran PRIVATE
 ${CMAKE_CURRENT_BINARY_DIR}/maptran.f90 ${CMAKE_CURRENT_BINARY_DIR}/vallado.f90
 aer.f90 ecef.f90 enu.f90 sphere.f90 utils.f90)
 
