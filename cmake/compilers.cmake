@@ -11,16 +11,6 @@ elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -fcheck=all -Werror=array-bounds")
   # -march=native is not for all CPU arches with GCC.
   add_compile_options(-mtune=native -Wall -Wextra)
-
-  if(CMAKE_Fortran_COMPILER_VERSION VERSION_GREATER_EQUAL 8)
-    string(APPEND CMAKE_Fortran_FLAGS " -std=f2018")
-  endif()
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL NAG)
   string(APPEND CMAKE_Fortran_FLAGS " -f2018 -C -colour -gline -nan -info -u")
-endif()
-
-include(CheckFortranSourceCompiles)
-check_fortran_source_compiles("implicit none (type, external); end" f2018impnone SRC_EXT f90)
-if(NOT f2018impnone)
-  message(FATAL_ERROR "Compiler does not support Fortran 2018 IMPLICIT NONE (type, external): ${CMAKE_Fortran_COMPILER_ID} ${CMAKE_Fortran_COMPILER_VERSION}")
 endif()

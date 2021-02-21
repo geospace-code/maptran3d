@@ -21,18 +21,9 @@ Compile-time polymorphism enabled by configuring with one of:
 The large real values typical of map coordinates can lead to large error with 32-bit reals.
 64-bit real is the default.
 
-### CMake
-
 ```sh
-ctest -S setup.cmake -VV
-```
-
-### Meson
-
-```sh
-meson build
-
-meson test -C build
+cmake --preset=ninja
+cmake --build build
 ```
 
 ## Usage
