@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.14...3.20)
 
-project(MapTran
+project(maptran
   LANGUAGES Fortran
-  VERSION 1.1.2
+  VERSION 1.1.3
   HOMEPAGE_URL https://github.com/geospace-code/maptran3d)
 
 include(CTest)
@@ -21,3 +21,5 @@ add_subdirectory(src)
 if(BUILD_TESTING)
   add_subdirectory(src/tests)
 endif()
+
+include(cmake/install.cmake)
