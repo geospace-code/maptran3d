@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.14...3.20)
 
 project(maptran
   LANGUAGES Fortran
-  VERSION 1.1.3
+  VERSION 1.1.4
   HOMEPAGE_URL https://github.com/geospace-code/maptran3d)
 
 include(CTest)

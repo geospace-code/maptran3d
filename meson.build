@@ -1,5 +1,5 @@
 project('MapTran', 'fortran',
-  version: '1.1.2',
+  version: '1.1.4',
   meson_version : '>=0.51.2',
   default_options : ['default_library=static', 'buildtype=release', 'warning_level=2'])
 
