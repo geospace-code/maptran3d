@@ -30,24 +30,20 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: cmake --preset=make -Drealbits=64
-    - run: cmake --build build --parallel
-    - run: ctest --output-on-failure
-      working-directory: build
+    - run: cmake --preset make -Drealbits=64
+    - run: cmake --build --preset default
+    - run: ctest --preset default
 
     - run: cmake --preset=make -Drealbits=32
-    - run: cmake --build build --parallel
-    - run: ctest --output-on-failure
-      working-directory: build
+    - run: cmake --build --preset default
+    - run: ctest --preset default
 
 
   windowsCmake:
-    needs: linuxCmake
     runs-on: windows-latest
     steps:
     - uses: actions/checkout@v2
 
     - run: cmake --preset=makewin
-    - run: cmake --build build --parallel
-    - run: ctest --output-on-failure
-      working-directory: build
+    - run: cmake --build --preset default
+    - run: ctest --preset default
