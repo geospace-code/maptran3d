@@ -20,7 +20,4 @@ set_target_properties(maptran PROPERTIES
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/maptran.mod
   DESTINATION include)
 
-install(TARGETS maptran
-  EXPORT ${PROJECT_NAME}Targets
-  ARCHIVE DESTINATION lib
-  LIBRARY DESTINATION lib)
+install(TARGETS maptran EXPORT ${PROJECT_NAME}Targets)
