@@ -1,8 +1,11 @@
 cmake_minimum_required(VERSION 3.14...3.21)
 
+file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION PROJECT_VERSION
+  REGEX "^([0-9]+\.[0-9]+\.[0-9]+)" LIMIT_INPUT 16 LENGTH_MAXIMUM 16 LIMIT_COUNT 1)
+
 project(maptran
   LANGUAGES Fortran
-  VERSION 1.1.4
+  VERSION ${PROJECT_VERSION}
   HOMEPAGE_URL https://github.com/geospace-code/maptran3d)
 
 include(CTest)
