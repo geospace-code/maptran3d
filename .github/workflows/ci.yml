@@ -30,11 +30,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: cmake --preset make -Drealbits=64
+    - run: cmake --preset default -Drealbits=64 -G "Unix Makefiles"
     - run: cmake --build --preset default
     - run: ctest --preset default
 
-    - run: cmake --preset=make -Drealbits=32
+    - run: cmake --preset default -Drealbits=32 -G "Unix Makefiles"
     - run: cmake --build --preset default
     - run: ctest --preset default
 
@@ -44,6 +44,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: cmake --preset=makewin
+    - run: cmake --preset default -G "MinGW Makefiles"
     - run: cmake --build --preset default
     - run: ctest --preset default

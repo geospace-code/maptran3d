@@ -2,9 +2,11 @@ set(CMAKE_CONFIGURATION_TYPES "Release;RelWithDebInfo;Debug" CACHE STRING "Build
 
 if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
   if(WIN32)
-    string(APPEND CMAKE_Fortran_FLAGS " /QxHost /stand:f18 /traceback /warn /heap-arrays")
+    add_compile_options(/QxHost)
+    string(APPEND CMAKE_Fortran_FLAGS " /traceback /warn /heap-arrays")
   else()
-    string(APPEND CMAKE_Fortran_FLAGS " -xHost -stand f18 -traceback -warn -heap-arrays")
+    add_compile_options(-xHost)
+    string(APPEND CMAKE_Fortran_FLAGS " -traceback -warn -heap-arrays")
   endif()
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
   string(APPEND CMAKE_Fortran_FLAGS " -fimplicit-none")
