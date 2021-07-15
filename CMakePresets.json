@@ -15,7 +15,6 @@
   "displayName": "Intel oneAPI LLVM",
   "environment": {
     "CC": "icx",
-    "CXX": "icx",
     "FC": "ifx"
   }
 }

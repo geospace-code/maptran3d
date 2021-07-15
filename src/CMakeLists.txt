@@ -18,6 +18,6 @@ set_target_properties(maptran PROPERTIES
   Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/maptran.mod
-  DESTINATION include)
+  TYPE INCLUDE)
 
 install(TARGETS maptran EXPORT ${PROJECT_NAME}Targets)
