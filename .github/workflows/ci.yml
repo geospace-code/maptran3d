@@ -1,5 +1,9 @@
 name: ci
 
+env:
+  CMAKE_BUILD_PARALLEL_LEVEL: 3
+  CTEST_PARALLEL_LEVEL: 3
+
 on:
   push:
     paths:
@@ -30,11 +34,11 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: cmake --preset default -Drealbits=64 -G "Unix Makefiles"
+    - run: cmake --preset default -Drealbits=64
     - run: cmake --build --preset default
     - run: ctest --preset default
 
-    - run: cmake --preset default -Drealbits=32 -G "Unix Makefiles"
+    - run: cmake --preset default -Drealbits=32
     - run: cmake --build --preset default
     - run: ctest --preset default
 
