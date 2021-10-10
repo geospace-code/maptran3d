@@ -1,18 +1,15 @@
 set(CMAKE_CONFIGURATION_TYPES "Release;RelWithDebInfo;Debug" CACHE STRING "Build type selections" FORCE)
 
-if(CMAKE_Fortran_COMPILER_ID STREQUAL Intel)
-  if(WIN32)
-    add_compile_options(/QxHost)
-    string(APPEND CMAKE_Fortran_FLAGS " /traceback /warn /heap-arrays")
-  else()
-    add_compile_options(-xHost)
-    string(APPEND CMAKE_Fortran_FLAGS " -traceback -warn -heap-arrays")
-  endif()
+if(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
+  add_compile_options(
+  $<IF:$<BOOL:${WIN32}>,/QxHost,-xHost>
+  "$<$<COMPILE_LANGUAGE:Fortran>:-warn;-traceback;-heap-arrays>"
+  )
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL GNU)
-  string(APPEND CMAKE_Fortran_FLAGS " -fimplicit-none")
-  string(APPEND CMAKE_Fortran_FLAGS_DEBUG " -fcheck=all -Werror=array-bounds")
-  # -march=native is not for all CPU arches with GCC.
-  add_compile_options(-mtune=native -Wall -Wextra)
+  add_compile_options(-mtune=native -Wall -Wextra
+  "$<$<COMPILE_LANGUAGE:Fortran>:-fimplicit-none>"
+  "$<$<AND:$<COMPILE_LANGUAGE:Fortran>,$<CONFIG:Debug>>:-fcheck=all;-Werror=array-bounds>"
+  )
 elseif(CMAKE_Fortran_COMPILER_ID STREQUAL NAG)
-  string(APPEND CMAKE_Fortran_FLAGS " -f2018 -C -colour -gline -nan -info -u")
+  add_compile_options("$<$<COMPILE_LANGUAGE:Fortran>:-f2018;-C;-colour;-gline;-nan;-info;-u>")
 endif()
