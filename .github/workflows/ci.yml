@@ -35,13 +35,13 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: cmake --preset default -Drealbits=64
-    - run: cmake --build --preset default
-    - run: ctest --preset default
+    - run: cmake -B build -Drealbits=64
+    - run: cmake --build build
+    - run: ctest --test-dir build --preset default
 
-    - run: cmake --preset default -Drealbits=32
-    - run: cmake --build --preset default
-    - run: ctest --preset default
+    - run: cmake -B build -Drealbits=32
+    - run: cmake --build build
+    - run: ctest --test-dir build --preset default
 
 
   windowsCmake:
@@ -49,6 +49,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - run: cmake --preset default -G "MinGW Makefiles"
-    - run: cmake --build --preset default
-    - run: ctest --preset default
+    - run: cmake -B build -G "MinGW Makefiles"
+    - run: cmake --build build
+    - run: ctest --test-dir build --preset default
