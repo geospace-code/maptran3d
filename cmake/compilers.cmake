@@ -1,5 +1,3 @@
-set(CMAKE_CONFIGURATION_TYPES "Release;RelWithDebInfo;Debug" CACHE STRING "Build type selections" FORCE)
-
 if(CMAKE_Fortran_COMPILER_ID MATCHES "^Intel")
   add_compile_options(
   $<IF:$<BOOL:${WIN32}>,/QxHost,-xHost>
