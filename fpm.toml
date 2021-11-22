@@ -1,5 +1,5 @@
 name = "maptran3d"
-version = "VERSION"
+version = "1.2.0"
 license = "BSD"
 author = "Michael Hirsch"
 copyright = "2020 Michael Hirsch"

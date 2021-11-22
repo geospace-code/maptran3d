@@ -1,6 +1,6 @@
 project('MapTran', 'fortran',
   meson_version : '>=0.57.0',
-  default_options : ['default_library=static', 'buildtype=release', 'warning_level=2'])
+  default_options : ['buildtype=release'])
 
 fc = meson.get_compiler('fortran')
 if fc.get_id() == 'intel'
