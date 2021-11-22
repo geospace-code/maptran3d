@@ -18,7 +18,7 @@ module procedure geodetic2enu
 !!
 !! *  e,n,u:  East, North, Up coordinates of test points (meters)
 
-real(wp) x1,y1,z1,x2,y2,z2, dx,dy,dz
+real :: x1,y1,z1,x2,y2,z2, dx,dy,dz
 
 
 call geodetic2ecef(lat,lon,alt,x1,y1,z1,spheroid,deg)
@@ -47,7 +47,7 @@ module procedure enu2geodetic
 ! -------
 ! lat,lon,alt: geodetic coordinates of test points (degrees,degrees,meters)
 
-real(wp) :: x,y,z
+real :: x,y,z
 
 call enu2ecef(east, north, up, lat0, lon0, alt0, x, y, z, spheroid, deg)
 call ecef2geodetic(x, y, z, lat, lon, alt, spheroid,deg)
@@ -69,7 +69,7 @@ module procedure aer2enu
 ! -------
 ! e,n,u:  East, North, Up coordinates of test points (meters)
 
-real(wp) :: r, a, e
+real :: r, a, e
 logical :: d
 
 d=.true.
@@ -105,10 +105,10 @@ module procedure enu2aer
 !! *  az: azimuth clockwise from local north
 !! *  el: elevation angle above local horizon
 
-real(wp) :: r, e, n, u
+real :: r, e, n, u
 logical :: d
 
-real(wp), parameter :: tolerance = 1e-3_wp !< 1mm precision
+real, parameter :: tolerance = 1e-3 !< 1mm precision
 
 !> singularity fixes
 e = east
@@ -127,7 +127,7 @@ slantRange = hypot(r, u)
 elev = atan2(u, r)
 az = modulo(atan2(e, n), 2 * pi)
 
-d=.true.
+d = .true.
 if (present(deg)) d = deg
 
 if (d) then

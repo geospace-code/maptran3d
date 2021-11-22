@@ -21,7 +21,7 @@ module procedure ecef2aer
 !! az: azimuth clockwise from local north
 !! el: elevation angle above local horizon
 
-real(wp) :: east, north, up
+real :: east, north, up
 
 call ecef2enu(x, y, z, lat0, lon0, alt0, east, north, up, spheroid, deg)
 call enu2aer(east, north, up, az, el, slantRange, deg)
@@ -45,7 +45,7 @@ module procedure aer2ecef
 ! -------
 ! x,y,z: Earth Centered Earth Fixed (ECEF) coordinates of test point (meters)
 
-real(wp) :: x0,y0,z0, e,n,u,dx,dy,dz
+real :: x0,y0,z0, e,n,u,dx,dy,dz
 
 !> Origin of the local system in geocentric coordinates.
 call geodetic2ecef(lat0, lon0, alt0,x0, y0, z0, spheroid,deg)
@@ -77,7 +77,7 @@ module procedure geodetic2aer
 ! az: azimuth clockwise from local north
 ! el: elevation angle above local horizon
 
-real(wp) :: east,north,up
+real :: east,north,up
 
 
 call geodetic2enu(lat, lon, alt, lat0, lon0, alt0, east,north,up, spheroid, deg)
@@ -102,7 +102,7 @@ module procedure aer2geodetic
 !!
 !! *  lat1,lon1,alt1: geodetic coordinates of test points (degrees,degrees,meters)
 
-real(wp) :: x,y,z
+real :: x,y,z
 
 call aer2ecef(az, el, slantRange, lat0, lon0, alt0, x, y, z, spheroid, deg)
 

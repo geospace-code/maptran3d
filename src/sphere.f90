@@ -22,11 +22,11 @@ module procedure lookAtSpheroid
 !!  https://medium.com/@stephenhartzell/satellite-line-of-sight-intersection-with-earth-d786b4a6a9b6 Stephen Hartzell
 
 type(Ellipsoid) :: ell
-real(wp) :: a,b,c,east,north,up,u,v,w,x,y,z, el, val, radical, magnitude
+real :: a,b,c,east,north,up,u,v,w,x,y,z, el, val, radical, magnitude
 logical :: d
-real(wp):: nan
+real :: nan
 
-nan = ieee_value(0._wp, ieee_quiet_nan)
+nan = ieee_value(0., ieee_quiet_nan)
 
 ell = wgs84Ellipsoid
 if (present(spheroid)) ell = spheroid
@@ -39,12 +39,12 @@ if (present(deg)) d = deg
  c = ell%SemiminorAxis
 
 if (d) then
-  el = tilt - 90._wp
+  el = tilt - 90
 else
   el = tilt - pi / 2
 endif
 
-call aer2enu(az, el, 1._wp, east, north, up, deg=d) ! fixed 1 km slant range
+call aer2enu(az, el, 1., east, north, up, deg=d) ! fixed 1 km slant range
 call enu2uvw(east,north,up, lat0,lon0, u,v,w, deg=d)
 call geodetic2ecef(lat0,lon0,h0, x,y,z, spheroid=ell, deg=d)
 

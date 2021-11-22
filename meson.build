@@ -9,11 +9,6 @@ elif fc.get_id() == 'intel-cl'
   add_project_arguments('/fpp', '/heap-arrays', language : 'fortran')
 endif
 
-wp_real = get_option('realbits')=='32' ? 'wp=>real32' : 'wp=>real64'
-
-wp_conf = configuration_data()
-wp_conf.set('wp_real', wp_real)
-
 subdir('src')
 # --- Maptran library
 maptran = library('maptran',

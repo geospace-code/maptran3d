@@ -9,24 +9,21 @@ Similar to Python
 and Matlab
 [Matmap3d](https://github.com/geospace-code/matmap3d).
 
-## Install
-
-Requires Fortran 2008 compiler, such as `gfortran`, `ifort`, PGI, `nagfor`, `flang`, Cray, IBM XL, etc.
-Use CMake or Meson to build the suite, which creates `libmaptran.a` or similar.
-Compile-time polymorphism enabled by configuring with one of:
-
-* `-Drealbits=32`
-* `-Drealbits=64`
-
-The large real values typical of map coordinates can lead to large error with 32-bit reals.
-64-bit real is the default.
+Default real precision is double precision (64 bit).
 
 ```sh
-cmake --preset=ninja
+cmake -B build
 cmake --build build
 ```
 
-## Usage
+Set 32-bit real by:
+
+```sh
+cmake -B build -Drealbits=32
+cmake --build build
+```
+
+which produces build/libmaptran.a or similar.
 
 The modern Fortran API is simple like PyMap3D and Matlab Mapping Toolbox.
 `elemental` procedures are used throughout to enable seamless support of scalar or array coordinate inputs.
@@ -38,7 +35,7 @@ call geodetic2ecef(lat,lon,alt, x,y,z)
 call geodetic2aer(lat,lon,alt, observer_lat, observer_lon, observer_alt)
 ```
 
-### Functions
+## Functions
 
 Popular mapping toolbox functions ported to Fortran include the
 following, where the source coordinate system (before the "2") is
@@ -61,7 +58,7 @@ Abbreviations:
 * [ENU: East North Up](https://en.wikipedia.org/wiki/Axes_conventions#Ground_reference_frames:_ENU_and_NED)
 * [NED: North East Down](https://en.wikipedia.org/wiki/North_east_down)
 
-### Caveats
+## Caveats
 
 * Atmospheric effects neglected in all functions.
 * Planetary perturbations and nutation etc. not fully considered.

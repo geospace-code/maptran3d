@@ -17,7 +17,7 @@ module procedure enu2uvw
 !!
 !! * u,v,w:   coordinates of test point(s) (meters)
 
-real(wp) :: t, lat0, lon0
+real :: t, lat0, lon0
 logical :: d
 
 d=.true.
@@ -44,7 +44,7 @@ module procedure anglesep
 ! angular separation between two points on sphere
 ! all input/output in DEGREES
 
-real(wp) :: la0,lo0,la1,lo1
+real :: la0,lo0,la1,lo1
 
 la0 = radians(lat0)
 lo0 = radians(lon0)

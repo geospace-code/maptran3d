@@ -11,7 +11,7 @@ module procedure ecef2geodetic
 !! You, Rey-Jer. (2000). Transformation of Cartesian to Geodetic Coordinates without Iterations.
 !! Journal of Surveying Engineering. doi: 10.1061/(ASCE)0733-9453
 
-real(wp) :: ea, eb, r, E, u, Q, huE, Beta, eps, sinBeta, cosBeta
+real :: ea, eb, r, E, u, Q, huE, Beta, eps, sinBeta, cosBeta
 type(Ellipsoid) :: ell
 logical :: d, inside
 
@@ -61,7 +61,7 @@ if (present(alt)) then
   alt = hypot(z - eb * sinBeta, Q - ea * cosBeta)
 
   !> inside ellipsoid?
-  inside = x**2 / ea**2 + y**2 / ea**2 + z**2 / eb**2 < 1._wp
+  inside = x**2 / ea**2 + y**2 / ea**2 + z**2 / eb**2 < 1
   if (inside) alt = -alt
 endif
 
@@ -91,7 +91,7 @@ module procedure geodetic2ecef
 !!
 !! * x,y,z:  ECEF coordinates of test point(s) (meters)
 
-real(wp) :: N, sinLat, cosLat, cosLon, sinLon, lat, lon
+real :: N, sinLat, cosLat, cosLon, sinLon, lat, lon
 type(Ellipsoid) :: ell
 logical :: d
 
@@ -166,7 +166,7 @@ module procedure enu2ecef
 ! -------
 ! x,y,z: Earth Centered Earth Fixed (ECEF) coordinates of test point (meters)
 
-real(wp) :: x0,y0,z0,dx,dy,dz
+real :: x0,y0,z0,dx,dy,dz
 
 call geodetic2ecef(lat0, lon0, alt0, x0, y0, z0, spheroid, deg)
 call enu2uvw(e, n, u, lat0, lon0, dx, dy, dz, deg)
@@ -191,7 +191,7 @@ module procedure ecef2enu
 !!
 !! * e,n,u:  East, North, Up coordinates of test points (meters)
 
-real(wp) :: x0,y0,z0
+real :: x0,y0,z0
 
 call geodetic2ecef(lat0, lon0, alt0, x0,y0,z0, spheroid,deg)
 call ecef2enuv(x - x0, y - y0, z - z0, lat0, lon0, east, north, up, deg)
@@ -211,7 +211,7 @@ module procedure ecef2enuv
 !!
 !! * east,north,Up:  East, North, Up vector
 
-real(wp) :: t, lat0, lon0
+real :: t, lat0, lon0
 logical :: d
 
 d=.true.
@@ -231,9 +231,9 @@ north = -sin(lat0) * t + cos(lat0) * w
 end procedure ecef2enuv
 
 
-elemental real(wp) function radius_normal(lat,E)
+elemental real function radius_normal(lat,E)
 
-real(wp), intent(in) :: lat
+real, intent(in) :: lat
 type(Ellipsoid), intent(in) :: E
 
 !> singularity  pi/2 issue is inherent to real32

@@ -11,13 +11,11 @@ HOMEPAGE_URL https://github.com/geospace-code/maptran3d
 
 include(CTest)
 
-include(cmake/compilers.cmake)
-
-if(realbits EQUAL 32)
-  set(wp_real "wp=>real32")
-else()
-  set(wp_real "wp=>real64")
+if(NOT realbits)
+  set(realbits 32)
 endif()
+
+include(cmake/compilers.cmake)
 
 # --- Maptran library
 add_library(maptran)

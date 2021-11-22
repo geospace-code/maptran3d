@@ -1,16 +1,15 @@
 module vallado
 !! based on http://www.smad.com/vallado/
-use, intrinsic:: iso_fortran_env, only: @wp_real@
 
 implicit none (type, external)
 private
 public:: toGST, toJulian, toLST, radec2azel, azel2radec
 
-real(wp), parameter :: pi = 4._wp * atan(1.0_wp)
+real, parameter :: pi = 4 * atan(1.0)
 
 type,public :: datetime
 integer :: year, month, day, hour, minute
-real(wp) :: second
+real :: second
 end type
 
 
@@ -29,11 +28,11 @@ elemental subroutine azel2radec(azz,ell,llat,llon,jd, ra,decl)
 ! -------
 ! ra, decl: right ascension, declination (degrees)
 
-real(wp), intent(in) :: azz,ell,llat,llon
-real(wp), intent(in) :: jd ! Julian Date
-real(wp), intent(out) :: ra, decl
+real, intent(in) :: azz,ell,llat,llon
+real, intent(in) :: jd ! Julian Date
+real, intent(out) :: ra, decl
 
-real(wp) :: lst, lha, sinv, cosv, az, el, lat, lon
+real :: lst, lha, sinv, cosv, az, el, lat, lon
 
 az = radians(azz)
 el = radians(ell)
@@ -52,7 +51,7 @@ Cosv = (SIN(el) - SIN(lat)*SIN(decl)) / &
 LHA  = ATAN2(Sinv,Cosv)
 lst = toLST(Lon, JD)
 
-ra = modulo(degrees(LST - LHA), 360._wp)
+ra = modulo(degrees(LST - LHA), 360.)
 decl = degrees(decl)
 
 end subroutine azel2radec
@@ -71,11 +70,11 @@ elemental SUBROUTINE radec2azel(rra,dDecl,llat,llon,jd, Az,El)
 ! -------
 ! az, el: azimuth, elevation (degrees)
 
-REAL(wp), intent(in) :: rra,dDecl, llat, llon
-real(wp), intent(in) :: jd
-real(wp), intent(out) :: Az,El
+REAL, intent(in) :: rra,dDecl, llat, llon
+real, intent(in) :: jd
+real, intent(out) :: Az,El
 
-REAL(wp) :: Sinv, Cosv, LHA, lat, lon, ra, decl
+REAL :: Sinv, Cosv, LHA, lat, lon, ra, decl
 
 lat = radians(llat)
 lon = radians(llon)
@@ -93,14 +92,14 @@ Sinv = -SIN(LHA)*COS(Decl)*COS(lat) / &
 Cosv = ( SIN(Decl)-SIN(el)*SIN(lat) ) / &
        (COS(el)*COS(lat))
 
-Az = modulo(degrees(ATAN2(Sinv,Cosv)), 360._wp)
+Az = modulo(degrees(ATAN2(Sinv,Cosv)), 360.)
 el = degrees(el)
 
 
 END subroutine radec2azel
 
 
-elemental real(wp) function toLST(Lon, JD) result(LST)
+elemental real function toLST(Lon, JD) result(LST)
 !! Julian Date => local sidereal time
 !!
 !! ## inputs
@@ -108,7 +107,7 @@ elemental real(wp) function toLST(Lon, JD) result(LST)
 !! *  lon: geodetic longitude (radians)
 !! *  jd: Julian Date (decimal)
 
-REAL(wp), intent(in) :: Lon, JD
+REAL, intent(in) :: Lon, JD
 
 LST = Lon + toGST(jd)
 
@@ -117,7 +116,7 @@ LST = modulo(LST, 2*pi )
 END function toLST
 
 
-elemental real(wp) function toJulian(t) result(jd)
+elemental real function toJulian(t) result(jd)
 ! Gregorian date, time => Julian Date
 !
 ! inputs
@@ -129,7 +128,7 @@ elemental real(wp) function toJulian(t) result(jd)
 ! JD: Julian Date
 
 type(datetime), intent(in) :: t
-real(wp) :: B, y, m
+real :: B, y, m
 
 y = t%year
 m = t%month
@@ -139,17 +138,17 @@ IF ( M <= 2 ) THEN
   M = m + 12
 ENDIF
 
-B = 2 - INT(Y*0.01_wp) + INT(INT(Y*0.01_wp)*0.25_wp)
+B = 2 - INT(Y*0.01) + INT(INT(Y*0.01)*0.25)
 
-JD= INT( 365.25_wp*(Y + 4716) ) + &
-    INT( 30.6001_wp*(M+1) ) + &
-    t%day + B - 1524.5_wp + &
-    ( (t%second/60.0_wp + t%minute ) / 60.0_wp + t%hour ) / 24.0_wp
+JD= INT( 365.25*(Y + 4716) ) + &
+    INT( 30.6001*(M+1) ) + &
+    t%day + B - 1524.5 + &
+    ( (t%second/60.0 + t%minute ) / 60.0 + t%hour ) / 24.0
 
 END function toJulian
 
 
-elemental real(wp) FUNCTION toGST(JD) result(GST)
+elemental real FUNCTION toGST(JD) result(GST)
 ! Julian Date => to Greenwich Sidereal Time
 !
 ! inputs
@@ -160,32 +159,32 @@ elemental real(wp) FUNCTION toGST(JD) result(GST)
 ! ------
 ! GST: Greenwich Sidereal Time (decimal)
 
-real(wp), intent(in) :: JD
-real(wp) :: TUT1
+real, intent(in) :: JD
+real :: TUT1
 
 
-TUT1= ( JD - 2451545._wp ) / 36525._wp
-gst = -6.2e-6_wp*TUT1**3 + &
-            0.093104_wp*TUT1**2 + &
-           (876600._wp*3600._wp + 8640184.812866_wp)*TUT1 + &
-            67310.54841_wp
+TUT1= ( JD - 2451545. ) / 36525.
+gst = -6.2e-6*TUT1**3 + &
+            0.093104*TUT1**2 + &
+           (876600.*3600. + 8640184.812866)*TUT1 + &
+            67310.54841
 
-gst = modulo(radians(gst) / 240._wp, 2*pi) ! 360/86400 = 1/240, to deg, to rad
+gst = modulo(radians(gst) / 240., 2*pi) ! 360/86400 = 1/240, to deg, to rad
 
 end function toGST
 
 
-elemental real(wp) function degrees(rad)
-real(wp), intent(in) :: rad
+elemental real function degrees(rad)
+real, intent(in) :: rad
 
-degrees = 180._wp / pi * rad
+degrees = 180 / pi * rad
 end function degrees
 
 
-elemental real(wp) function radians(deg)
-real(wp), intent(in) :: deg
+elemental real function radians(deg)
+real, intent(in) :: deg
 
-radians = pi / 180._wp * deg
+radians = pi / 180 * deg
 end function radians
 
 
