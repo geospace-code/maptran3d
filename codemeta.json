@@ -1,0 +1,31 @@
+{
+    "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+    "@type": "SoftwareSourceCode",
+    "license": "https://spdx.org/licenses/BSD-2-Clause",
+    "codeRepository": "https://github.com/geospace-code/maptran3d",
+    "contIntegration": "https://github.com/geospace-code/maptran3d/actions",
+    "dateModified": "2021-07-18",
+    "downloadUrl": "https://github.com/geospace-code/maptran3d/releases",
+    "issueTracker": "https://github.com/geospace-code/maptran3d/issues",
+    "name": "maptran3d",
+    "version": "1.1.5",
+    "identifier": "10.5281/zenodo.4589680",
+    "description": "Fortran coordinate transforms and geodesy",
+    "applicationCategory": "geodesy",
+    "developmentStatus": "active",
+    "keywords": [
+        "geodesy",
+        "mapping"
+    ],
+    "programmingLanguage": [
+        "Fortran"
+    ],
+    "author": [
+        {
+            "@type": "Person",
+            "@id": "https://orcid.org/0000-0002-1637-6526",
+            "givenName": "Michael",
+            "familyName": "Hirsch"
+        }
+    ]
+}

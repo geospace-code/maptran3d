@@ -1,8 +1,7 @@
-cmake_minimum_required(VERSION 3.14...3.22)
+cmake_minimum_required(VERSION 3.19...3.22)
 
-file(STRINGS ${CMAKE_CURRENT_SOURCE_DIR}/VERSION PROJECT_VERSION
-REGEX "^([0-9]+\.[0-9]+\.[0-9]+)" LIMIT_INPUT 16 LENGTH_MAXIMUM 16 LIMIT_COUNT 1
-)
+file(READ ${CMAKE_CURRENT_LIST_DIR}/codemeta.json _j)
+string(JSON PROJECT_VERSION GET ${_j} version)
 
 project(maptran
 LANGUAGES Fortran
@@ -21,6 +20,18 @@ else()
 endif()
 
 # --- Maptran library
+add_library(maptran)
+target_include_directories(maptran PUBLIC
+$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+$<INSTALL_INTERFACE:include>
+)
+set_target_properties(maptran PROPERTIES
+Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/include/maptran.mod TYPE INCLUDE)
+install(TARGETS maptran EXPORT ${PROJECT_NAME}-targets)
+
 add_subdirectory(src)
 
 if(BUILD_TESTING)
