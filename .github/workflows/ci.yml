@@ -1,8 +1,6 @@
 name: ci
 
 env:
-  CMAKE_BUILD_PARALLEL_LEVEL: 3
-  CTEST_PARALLEL_LEVEL: 3
   CMAKE_BUILD_TYPE: Release
 
 on:
@@ -15,7 +13,7 @@ on:
 
 jobs:
 
-  linuxMeson:
+  meson:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -30,25 +28,18 @@ jobs:
     - run: meson test -C build -v
 
 
-  linuxCmake:
-    runs-on: ubuntu-latest
+  cmake:
+    strategy:
+      matrix:
+        bits: [64, 32]
+        cfg: [{os: ubuntu-latest, gen: "Unix Makefiles"},
+              {os: windows-latest, gen: "MinGW Makefiles"}]
+
+    runs-on: ${{ matrix.cfg.os }}
+
     steps:
     - uses: actions/checkout@v2
 
-    - run: cmake -B build -Drealbits=64
-    - run: cmake --build build
-    - run: ctest --test-dir build --preset default
-
-    - run: cmake -B build -Drealbits=32
-    - run: cmake --build build
-    - run: ctest --test-dir build --preset default
-
-
-  windowsCmake:
-    runs-on: windows-latest
-    steps:
-    - uses: actions/checkout@v2
-
-    - run: cmake -B build -G "MinGW Makefiles"
+    - run: cmake -B build -Drealbits=${{ matrix.bits }} -G "${{ matrix.cfg.gen }}"
     - run: cmake --build build
     - run: ctest --test-dir build --preset default
