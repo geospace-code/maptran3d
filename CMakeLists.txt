@@ -9,7 +9,9 @@ VERSION ${PROJECT_VERSION}
 HOMEPAGE_URL https://github.com/geospace-code/maptran3d
 )
 
-include(CTest)
+enable_testing()
+
+option(${PROJECT_NAME}_BUILD_TESTING "self tests" on)
 
 if(NOT realbits)
   set(realbits 32)
@@ -32,8 +34,8 @@ install(TARGETS maptran EXPORT ${PROJECT_NAME}-targets)
 
 add_subdirectory(src)
 
-if(BUILD_TESTING)
-  add_subdirectory(tests)
+if(${PROJECT_NAME}_BUILD_TESTING)
+  add_subdirectory(test)
 endif()
 
 include(cmake/install.cmake)
