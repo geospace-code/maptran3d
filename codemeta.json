@@ -8,7 +8,6 @@
     "downloadUrl": "https://github.com/geospace-code/maptran3d/releases",
     "issueTracker": "https://github.com/geospace-code/maptran3d/issues",
     "name": "maptran3d",
-    "version": "1.2.0",
     "identifier": "10.5281/zenodo.4589680",
     "description": "Fortran coordinate transforms and geodesy",
     "applicationCategory": "geodesy",

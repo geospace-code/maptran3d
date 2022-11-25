@@ -1,17 +1,14 @@
-cmake_minimum_required(VERSION 3.19...3.24)
-
-file(READ ${CMAKE_CURRENT_LIST_DIR}/codemeta.json _j)
-string(JSON PROJECT_VERSION GET ${_j} version)
+cmake_minimum_required(VERSION 3.14...3.25)
 
 project(maptran
 LANGUAGES Fortran
-VERSION ${PROJECT_VERSION}
+VERSION 1.2.0
 HOMEPAGE_URL https://github.com/geospace-code/maptran3d
 )
 
 enable_testing()
 
-option(${PROJECT_NAME}_BUILD_TESTING "self tests" on)
+option(BUILD_TESTING "self tests" on)
 
 if(NOT realbits)
   set(realbits 32)
@@ -34,7 +31,7 @@ install(TARGETS maptran EXPORT ${PROJECT_NAME}-targets)
 
 add_subdirectory(src)
 
-if(${PROJECT_NAME}_BUILD_TESTING)
+if(BUILD_TESTING)
   add_subdirectory(test)
 endif()
 

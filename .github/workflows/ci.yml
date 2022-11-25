@@ -1,8 +1,5 @@
 name: ci
 
-env:
-  CMAKE_BUILD_TYPE: Release
-
 on:
   push:
     paths:
@@ -16,30 +13,30 @@ jobs:
   meson:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
       with:
         python-version: '3.x'
 
     - run: pip install meson ninja
 
     - run: meson setup build
-
+    - run: meson compile -C build
     - run: meson test -C build -v
 
 
   cmake:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
     strategy:
       matrix:
         bits: [64, 32]
-        cfg: [{os: ubuntu-latest, gen: "Unix Makefiles"},
-              {os: windows-latest, gen: "MinGW Makefiles"}]
-
-    runs-on: ${{ matrix.cfg.os }}
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
-    - run: cmake -B build -Drealbits=${{ matrix.bits }} -G "${{ matrix.cfg.gen }}"
-    - run: cmake --build build
-    - run: ctest --test-dir build --preset default
+    - run: cmake --preset default -Drealbits=${{ matrix.bits }}
+
+    - name: test workflow
+      run: cmake --workflow --preset default
